@@ -17,16 +17,6 @@ $q = "SELECT * FROM items";
 $r = mysql_query( $q , $cnxn );
 while( $s = mysql_fetch_assoc( $r ) )
 {
-/*
-  print "<pre>";
-  print $s['id'];
-  print "";
-  print_r( $split = createPathArray( $s['id'] ) );
-  print "";
-  print ( $path = "stacks/" . implode( '/' , $split ) . "." . $s['type'] );
-  print "</pre>";
-  $images[] = $path;
-*/
   $images[] = "stacks/" . implode( '/' , createPathArray( $s['id'] ) ) . "." . $s['type'];
 }
   
@@ -45,6 +35,9 @@ closeMySQL( $cnxn );
 
 <title>Gallery</title>
 
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+<script type='text/javascript' src='js/alx_gallery.js'></script>
+
 </head>
 <body>
 
@@ -56,7 +49,9 @@ foreach( $images as $i )
 {
 
 ?>
-  <img src="<?php print $i; ?>" style="width:200px;" ><br />
+  <span>
+    <img class="alx_thumbnail" src="<?php print $i; ?>" style="width:200px;" />
+  </span>
 <?php
 
 }

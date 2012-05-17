@@ -59,6 +59,7 @@ function createPathArray( $filehash )
 {
   $array = str_split( $filehash );
 
+  $path = '';
   for( $i=0 ; $i < count( $array ) ; $i++ )
   {
     $path .= $array[$i];
