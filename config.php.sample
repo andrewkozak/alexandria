@@ -7,6 +7,11 @@
 
 
 
+/** Filesystem **/
+define( 'FS_ROOT' , '' );
+
+
+
 /** MySQL **/
 define( 'MYSQL_LOCATION' , '' );
 define( 'MYSQL_DATABASE' , '' );
