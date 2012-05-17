@@ -1,10 +1,9 @@
 $(document).ready( function()
 {
-
-  $('img.alx_thumbnail').click( function() 
+  console.log( "JavaScript Loaded" );
+  $("a[rel=gallery]").fancybox(
   {
-    console.log( $(this).attr( 'src' );
-    console.log( 'image' );
+    'transitionIn' : 'elastic',
+    'transitionOut' : 'elastic'		
   });
-
 });
