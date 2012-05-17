@@ -1,0 +1,18 @@
+<?php
+/**
+ *  Global Configuration File
+ *  
+ *  @author Andrew Kozak < andrewkozak.com >
+ */
+
+
+
+/** MySQL **/
+define( 'MYSQL_LOCATION' , '' );
+define( 'MYSQL_DATABASE' , '' );
+define( 'MYSQL_USERNAME' , '' );
+define( 'MYSQL_PASSWORD' , '' );
+
+
+
+?>
