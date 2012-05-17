@@ -4,4 +4,8 @@ Alexandria Media Management Library
 0. SETUP
 
 0.a. Use the schema in /database/schema.sql to create the MySQL database
-0.b. Copy config.php.sample to config.php and fill in MySQL information
+0.b. Copy config.php.sample to config.php
+     $ cp config.php.sample config.php
+0.c. Open config.php and fill in environment details
+0.d. Chmod the TimThumb extension's /cache directory 
+     $ chmod -R 777 third-party/timthumb/cache
