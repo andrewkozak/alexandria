@@ -83,7 +83,7 @@ foreach( $images as $i )
  
 ?>
   <li style="height:200px;width:200px;float:left;">
-    <a href="<?php print $i; ?>" rel="gallery">
+    <a class="fancybox-buttons" href="<?php print $i; ?>" rel="gallery" title="alpha,bravo,charlie">
       <img src="third-party/timthumb/timthumb.php?src=<?php print $i; ?>&h=200&w=200&zc=1&q=100" />
     </a>
   </li>
