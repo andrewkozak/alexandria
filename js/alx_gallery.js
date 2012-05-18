@@ -23,8 +23,18 @@ $(document).ready( function()
 	type : 'inside'
       },
       buttons : {}
-    },
+    } ,
+    
+    beforeClose : function()
+    {
+      var tags = changed_tags;
 
+for( var j = 0 ; j < tags.length ; j++ )
+{
+  console.log( "Closed array still has: " + tags[j] );
+}
+    } ,
+    
     beforeLoad : function() 
     {
       // Extract the ID from the href attribute
@@ -37,7 +47,7 @@ $(document).ready( function()
 
       // Begin markup for input box
       //var box = '<input type="text" class="alx_tags" value="';
-      var box = '<script type="text/javascript">$(\'input#input_' + href + '\').keypress( function(e){ k = ( e.keyCode ? e.keyCode : e.which ); if( k == 13 ){ submitTags(\'' + href + '\'); } e.stopImmediatePropagation(); });</script> <input id="input_' + href + '" type="text" class="alx_tags" value="';
+      var box = '<script type="text/javascript">$(\'input#input_' + href + '\').keypress( function(e){ k = ( e.keyCode ? e.keyCode : e.which ); if( k == 13 ){ storeChangedTags(\'' + href + '\'); } e.stopImmediatePropagation(); });</script> <input id="input_' + href + '" type="text" class="alx_tags" value="';
       
       // Put each tag in input box
       for( var i = 0 ; i < tags.length ; i++ )

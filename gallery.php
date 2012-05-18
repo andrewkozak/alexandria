@@ -65,24 +65,26 @@ closeMySQL( $cnxn );
 
 fs_root = '<?php print FS_ROOT; ?>';
 
-tmp_saved = new Array;
+changed_tags = new Array;
 
-function submitTags( id )
+function storeChangedTags( id )
 {
   var curr = $('input#input_'+id).val().replace(/,[\s]*$/,'');
   while( curr.match(/, /) ){ curr = curr.replace( /, / , ',' ); }
-console.log( $('div#tags_'+id).html() );
   $('div#tags_'+id).html( curr );
-console.log( $('div#tags_'+id).html() );
   
-  if( $.inArray( id , tmp_saved ) == -1 )
+  if( $.inArray( id , changed_tags ) == -1 )
   {
-    tmp_saved[ tmp_saved.length ] = id;
+    changed_tags[ changed_tags.length ] = id;
   }
-  for( var j = 0 ; j < tmp_saved.length ; j++ )
+}
+
+function clearChangedTags( id )
+{
+  changed_tags = $.grep( changed_tags , function(target) 
   {
-    console.log( "array has : " + tmp_saved[j] );
-  }
+    return target != id;
+  });
 }
 
 </script>
