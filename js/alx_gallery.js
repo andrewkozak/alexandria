@@ -25,15 +25,19 @@ $(document).ready( function()
       buttons : {}
     },
 
-    //afterLoad : function() 
     beforeLoad : function() 
     {
       // Extract the tags from the title attribute
       var tags = this.title.split(',');
 
-      // Begin markup for input box
-      var box = '<input type="text" class="alx_tags" value="';
+      // Extract the ID from the href attribute
+      var href = this.href.replace( fs_root + 'stacks/' , '' ).replace( /\..{0,5}$/i , '' );
+      while( href.match('/') ){ href = href.replace( '/' , '' ); }
 
+      // Begin markup for input box
+      //var box = '<input type="text" class="alx_tags" value="';
+      var box = '<script type="text/javascript">$(\'input#' + href + '\').keypress( function(e){ k = ( e.keyCode ? e.keyCode : e.which ); if( k == 13 ){ submitTags(\'' + href + '\'); } e.stopImmediatePropagation(); });</script> <input id="' + href + '" type="text" class="alx_tags" value="';
+      
       // Put each tag in input box
       for( var i = 0 ; i < tags.length ; i++ )
       {

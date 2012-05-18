@@ -60,7 +60,30 @@ closeMySQL( $cnxn );
 -->
 
 <!-- Alexandria -->
+<script type='text/javascript'>
+
+fs_root = '<?php print FS_ROOT; ?>';
+
+function submitTags( image_id )
+{
+console.log( image_id );
+return false;
+}
+
+</script>
 <script type='text/javascript' src='js/alx_gallery.js'></script>
+
+<script type='text/javascript'>
+
+
+$('input').load( function()
+{
+  $('input').keypress( function()
+  {
+    console.log( 'HELP' );
+  });
+});
+</script>
 
 <style>
 
