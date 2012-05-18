@@ -17,7 +17,12 @@ $q = "SELECT * FROM items";
 $r = mysql_query( $q , $cnxn );
 while( $s = mysql_fetch_assoc( $r ) )
 {
-  $images[] = FS_ROOT . "stacks/" . implode( '/' , createPathArray( $s['id'] ) ) . "." . $s['type'];
+  $images[] = array(
+    'path'=>FS_ROOT . "stacks/" . implode( '/' , createPathArray( $s['id'] ) ) . "." . $s['type'] ,
+    'tags'=>"alpha,bravo,charlie"
+  );
+  //$images[] = FS_ROOT . "stacks/" . implode( '/' , createPathArray( $s['id'] ) ) . "." . $s['type'];
+  //$images[] = $i;
 }
   
 
@@ -83,8 +88,12 @@ foreach( $images as $i )
  
 ?>
   <li style="height:200px;width:200px;float:left;">
+<!--
     <a class="fancybox-buttons" href="<?php print $i; ?>" rel="gallery" title="alpha,bravo,charlie">
       <img src="third-party/timthumb/timthumb.php?src=<?php print $i; ?>&h=200&w=200&zc=1&q=100" />
+-->
+    <a class="fancybox-buttons" href="<?php print $i['path']; ?>" rel="gallery" title="<?php print $i['tags']; ?>">
+      <img src="third-party/timthumb/timthumb.php?src=<?php print $i['path']; ?>&h=200&w=200&zc=1&q=100" />
     </a>
   </li>
 <?php
