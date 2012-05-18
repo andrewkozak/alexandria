@@ -18,6 +18,7 @@ $r = mysql_query( $q , $cnxn );
 while( $s = mysql_fetch_assoc( $r ) )
 {
   $images[] = array(
+    'id'=>$s['id'] ,
     'path'=>FS_ROOT . "stacks/" . implode( '/' , createPathArray( $s['id'] ) ) . "." . $s['type'] ,
     'tags'=>"alpha,bravo,charlie"
   );
@@ -64,26 +65,28 @@ closeMySQL( $cnxn );
 
 fs_root = '<?php print FS_ROOT; ?>';
 
-function submitTags( image_id )
+tmp_saved = new Array;
+
+function submitTags( id )
 {
-console.log( image_id );
-return false;
+  var curr = $('input#input_'+id).val().replace(/,[\s]*$/,'');
+  while( curr.match(/, /) ){ curr = curr.replace( /, / , ',' ); }
+console.log( $('div#tags_'+id).html() );
+  $('div#tags_'+id).html( curr );
+console.log( $('div#tags_'+id).html() );
+  
+  if( $.inArray( id , tmp_saved ) == -1 )
+  {
+    tmp_saved[ tmp_saved.length ] = id;
+  }
+  for( var j = 0 ; j < tmp_saved.length ; j++ )
+  {
+    console.log( "array has : " + tmp_saved[j] );
+  }
 }
 
 </script>
 <script type='text/javascript' src='js/alx_gallery.js'></script>
-
-<script type='text/javascript'>
-
-
-$('input').load( function()
-{
-  $('input').keypress( function()
-  {
-    console.log( 'HELP' );
-  });
-});
-</script>
 
 <style>
 
@@ -118,6 +121,7 @@ foreach( $images as $i )
     <a class="fancybox-buttons" href="<?php print $i['path']; ?>" rel="gallery" title="<?php print $i['tags']; ?>">
       <img src="third-party/timthumb/timthumb.php?src=<?php print $i['path']; ?>&h=200&w=200&zc=1&q=100" />
     </a>
+    <div style="display:none !important;" class="tags" id="tags_<?php print $i['id']; ?>"><?php print $i['tags']; ?></div>
   </li>
 <?php
 
