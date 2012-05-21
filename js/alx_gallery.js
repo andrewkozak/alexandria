@@ -1,5 +1,14 @@
 $(document).ready( function()
 {
+/*
+  var window_width = $(window).width();
+  var images_per_row = Math.floor(   /x)_ 
+  var width_remainder = window_width - ( window_width % 200 );
+  console.log( "remainder 
+*/
+
+  calcThumbSize();
+
   $("a[rel=gallery]").fancybox(
   {
     'transitionIn' : 'elastic',

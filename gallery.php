@@ -64,8 +64,9 @@ closeMySQL( $cnxn );
 <script type='text/javascript'>
 
 fs_root = '<?php print FS_ROOT; ?>';
-
 changed_tags = new Array;
+
+
 
 function storeChangedTags( id )
 {
@@ -85,6 +86,45 @@ function clearChangedTags( id )
   {
     return target != id;
   });
+}
+
+function calcThumbSize()
+{
+  var width = $(window).width();
+  var size = $('img.alx_thumbs').width();
+
+  var down_size = size;
+  var down_row = Math.floor( width / down_size );
+  while( width - ( down_row * down_size ) != 0 )
+  {
+    down_row--;
+console.log( "d_ipr: " + down_row );
+    down_size = Math.floor( width / down_row );
+console.log( "d_size: " + down_size );
+  }
+  
+  // Needs UP loop
+  var up_size = size;
+  var up_row = Math.floor( width / up_size );
+  while( width - ( up_row * up_size ) != 0 )
+  {
+    up_row++;
+console.log( "u_ipr: " + up_row );
+    up_size = Math.floor( width / up_row );
+console.log( "u_size: " + up_size );
+  }
+  
+  // Needs closest distance match logic 
+  if( Math.abs( size - down_size ) < Math.abs( size - up_size ) )
+  {
+    $('img.alx_thumbs').width( down_size );
+    $('img.alx_thumbs').height( down_size );
+  }
+  else
+  {
+    $('img.alx_thumbs').width( up_size );
+    $('img.alx_thumbs').height( up_size );
+  }
 }
 
 </script>
@@ -111,17 +151,19 @@ ul,li,a,img
 <ul>
 <?php
 
+$image_size = '200';
+
 foreach( $images as $i )
 {
  
 ?>
-  <li style="height:200px;width:200px;float:left;">
+  <li style="float:left;">
 <!--
     <a class="fancybox-buttons" href="<?php print $i; ?>" rel="gallery" title="alpha,bravo,charlie">
-      <img src="third-party/timthumb/timthumb.php?src=<?php print $i; ?>&h=200&w=200&zc=1&q=100" />
+      <img src="third-party/timthumb/timthumb.php?src=<?php print $i; ?>&h=<?php print $image_size; ?>&w=<?php print $image_size; ?>&zc=1&q=100" />
 -->
     <a class="fancybox-buttons" href="<?php print $i['path']; ?>" rel="gallery" title="<?php print $i['tags']; ?>">
-      <img src="third-party/timthumb/timthumb.php?src=<?php print $i['path']; ?>&h=200&w=200&zc=1&q=100" />
+      <img src="third-party/timthumb/timthumb.php?src=<?php print $i['path']; ?>&h=<?php print $image_size; ?>&w=<?php print $image_size; ?>&zc=1&q=100" class="alx_thumbs" style="height:<?php print $image_size; ?>px;width:<?php print $image_size; ?>px;" />
     </a>
     <div style="display:none !important;" class="tags" id="tags_<?php print $i['id']; ?>"><?php print $i['tags']; ?></div>
   </li>
