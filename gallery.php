@@ -17,22 +17,28 @@ $q = "SELECT * FROM items";
 $r = mysql_query( $q , $cnxn );
 while( $s = mysql_fetch_assoc( $r ) )
 {
+  $t = "SELECT t.name
+        FROM items_to_tags AS i2t
+          LEFT JOIN tags AS t
+            ON i2t.tag_id = t.id
+        WHERE i2t.item_id = '{$s['id']}'";
+  $u = mysql_query( $t , $cnxn );
+  $tags = array();
+  while( $v = mysql_fetch_assoc( $u ) )
+  {
+    $tags[] = $v['name'];
+  }
+
   $images[] = array(
     'id'=>$s['id'] ,
     'path'=>FS_ROOT . "stacks/" . implode( '/' , createPathArray( $s['id'] ) ) . "." . $s['type'] ,
-    'tags'=>"alpha,bravo,charlie"
+    'tags'=>trim( implode( ',' , $tags ) , ',' )
   );
-  //$images[] = FS_ROOT . "stacks/" . implode( '/' , createPathArray( $s['id'] ) ) . "." . $s['type'];
-  //$images[] = $i;
 }
-  
 
 // Close MySQL
 closeMySQL( $cnxn );
 
-// Batch through all images
-  // build path from hash/id+ext
-  // Fetch image
 
 
 ?>
@@ -65,6 +71,7 @@ closeMySQL( $cnxn );
 
 fs_root = '<?php print FS_ROOT; ?>';
 changed_tags = new Array;
+thumb_size = '200';
 
 
 
@@ -80,6 +87,8 @@ function storeChangedTags( id )
   }
 }
 
+
+
 function clearChangedTags( id )
 {
   changed_tags = $.grep( changed_tags , function(target) 
@@ -88,34 +97,29 @@ function clearChangedTags( id )
   });
 }
 
-function calcThumbSize()
+
+
+function resetThumbSize()
 {
   var width = $(window).width();
-  var size = $('img.alx_thumbs').width();
 
-  var down_size = size;
+  var down_size = thumb_size;
   var down_row = Math.floor( width / down_size );
   while( width - ( down_row * down_size ) != 0 )
   {
     down_row--;
-console.log( "d_ipr: " + down_row );
     down_size = Math.floor( width / down_row );
-console.log( "d_size: " + down_size );
   }
   
-  // Needs UP loop
-  var up_size = size;
+  var up_size = thumb_size;
   var up_row = Math.floor( width / up_size );
   while( width - ( up_row * up_size ) != 0 )
   {
     up_row++;
-console.log( "u_ipr: " + up_row );
     up_size = Math.floor( width / up_row );
-console.log( "u_size: " + up_size );
   }
   
-  // Needs closest distance match logic 
-  if( Math.abs( size - down_size ) < Math.abs( size - up_size ) )
+  if( Math.abs( thumb_size - down_size ) < Math.abs( thumb_size - up_size ) )
   {
     $('img.alx_thumbs').width( down_size );
     $('img.alx_thumbs').height( down_size );
@@ -124,6 +128,41 @@ console.log( "u_size: " + up_size );
   {
     $('img.alx_thumbs').width( up_size );
     $('img.alx_thumbs').height( up_size );
+  }
+}
+
+function submitTags()
+{
+  for( var i = 0 ; i < changed_tags.length ; i++ )
+  {
+    var id = changed_tags[i];
+//console.log( "Submitting tags for: " + id );
+    var tags = $('div.tags#tags_' + id ).html().split(',');
+//console.log( "These tags: " );
+//for( var j = 0 ; j < tags.length ; j++ )
+//{
+//  console.log( tags[j] );
+//}
+    var jqxhr = $.ajax(
+    {
+      url: "actions/update_tags.php" ,
+      type: 'POST' ,
+      data: { 'id': id , 'tags': tags }
+    })
+    .done( function( response )
+    {
+ //     console.log( "AJAX success" ); 
+   //   console.log( response );
+      clearChangedTags( id )
+    })
+    .fail( function() 
+    {
+      console.log( "AJAX error" ); 
+    })
+    .always( function() 
+    { 
+      //console.log( "AJAX complete" ); 
+    });
   }
 }
 

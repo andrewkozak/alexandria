@@ -1,13 +1,18 @@
 $(document).ready( function()
 {
-/*
-  var window_width = $(window).width();
-  var images_per_row = Math.floor(   /x)_ 
-  var width_remainder = window_width - ( window_width % 200 );
-  console.log( "remainder 
-*/
 
-  calcThumbSize();
+  //if( $(window).width % 2 == 0 )
+  //{
+    resetThumbSize();
+  //}
+
+  $(window).resize( function()
+  {
+    //if( $(window).width % 2 == 0 )
+    //{ 
+      resetThumbSize();
+    //}
+  });
 
   $("a[rel=gallery]").fancybox(
   {
@@ -17,31 +22,31 @@ $(document).ready( function()
 
   $('.fancybox-buttons').fancybox(
   {
-    openEffect  : 'none',
-    closeEffect : 'none',
+    openEffect  : 'none' ,
+    closeEffect : 'none' ,
     
-    prevEffect : 'none',
-    nextEffect : 'none',
+    prevEffect : 'none' ,
+    nextEffect : 'none' ,
 
-    closeBtn  : false,
+    closeBtn  : true ,
 
     helpers : 
     {
       title : 
       {
 	type : 'inside'
-      },
+      } ,
       buttons : {}
     } ,
-    
+   
+    onUpdate : function()
+    {
+      submitTags();
+    } ,
+ 
     beforeClose : function()
     {
-      var tags = changed_tags;
-
-for( var j = 0 ; j < tags.length ; j++ )
-{
-  console.log( "Closed array still has: " + tags[j] );
-}
+      submitTags();
     } ,
     
     beforeLoad : function() 
@@ -51,17 +56,21 @@ for( var j = 0 ; j < tags.length ; j++ )
       while( href.match('/') ){ href = href.replace( '/' , '' ); }
 
       // Extract the tags from the title attribute
-      //var tags = this.title.split(',');
       var tags = $('div.tags#tags_' + href ).html().split(',');
-
+      
       // Begin markup for input box
-      //var box = '<input type="text" class="alx_tags" value="';
-      var box = '<script type="text/javascript">$(\'input#input_' + href + '\').keypress( function(e){ k = ( e.keyCode ? e.keyCode : e.which ); if( k == 13 ){ storeChangedTags(\'' + href + '\'); } e.stopImmediatePropagation(); });</script> <input id="input_' + href + '" type="text" class="alx_tags" value="';
+      var box = '<script type="text/javascript">$(\'input#input_' + href + '\').keyup( function(e){ k = ( e.keyCode ? e.keyCode : e.which ); storeChangedTags(\'' + href + '\'); e.stopImmediatePropagation(); });</script> <input id="input_' + href + '" type="text" class="alx_tags" value="';
       
       // Put each tag in input box
-      for( var i = 0 ; i < tags.length ; i++ )
+      if( tags.length > 0 )
       {
-        box += tags[i] + ', ';
+        for( var i = 0 ; i < tags.length ; i++ )
+        {
+          if( tags[i].length > 0 )
+          {
+            box += tags[i].trim() + ', ';
+          }
+        }
       }
 
       // Close markup for input box

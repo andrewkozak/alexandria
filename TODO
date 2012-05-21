@@ -1,5 +1,4 @@
 Big messy TODO file...
 
-Have beforeClose store the tags so the user doesn't have to hit Enter
-Write the tags to the database
-
+Auto-focus the input box on viewing?
+  * Only if the left and right arrows are bound within the input box!

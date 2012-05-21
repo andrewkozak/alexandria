@@ -113,4 +113,76 @@ function generateHash( $filepath )
 
 
 
+function applyTags( $id , $tags )
+{
+  if(  count($tags) > 0  &&  strlen($id) > 0  )
+  {
+    $cnxn = openMySQL();
+
+    $tag_array = array();
+
+    foreach( $_POST['tags'] as $tag )
+    {
+      $trimmed_tag = trim( $tag );
+
+      $q = "SELECT `id` , `name` 
+            FROM tags 
+            WHERE `name`='{$trimmed_tag}'";
+
+      if( @mysql_num_rows( $r = mysql_query( $q ) ) !=1 )
+      {
+        $q = "INSERT INTO tags ( `name` )
+              VALUES ( '" . mysql_real_escape_string( $trimmed_tag ) . "' )";
+        mysql_query( $q , $cnxn );
+
+        $q = "SELECT `id` , `name` 
+              FROM tags 
+              WHERE `name`='{$trimmed_tag}'";
+
+        if( @mysql_num_rows( $r = mysql_query( $q ) ) !=1 ){ return false; }
+      }
+
+      $s = mysql_fetch_assoc( $r );
+
+      $tag_array[] = array( 'id'=>$s['id'] , 'name'=>$s['name'] );
+      $new_tags[] = $s['id'];
+    }
+
+    foreach( $tag_array as $t )
+    {
+      $q = "INSERT INTO items_to_tags ( `item_id` , `tag_id` ) 
+            VALUES ( '{$id}' , '{$t['id']}' )";
+      mysql_query( $q , $cnxn );
+    }
+    
+    $q = "SELECT t.id
+          FROM tags AS t
+            JOIN items_to_tags AS i2t
+              ON t.id = i2t.tag_id
+          WHERE i2t.item_id='{$id}'";
+    $r = mysql_query( $q , $cnxn );
+    while( $s = mysql_fetch_assoc( $r ) )
+    {
+      $old_tags[] = $s['id'];
+    }
+
+    $q = "DELETE FROM items_to_tags 
+          WHERE `tag_id` IN ('" . 
+            implode("','",array_diff($old_tags,$new_tags) )
+          . "')";
+
+    mysql_query( $q , $cnxn );
+
+    closeMySQL( $cnxn );
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
+
 ?>
