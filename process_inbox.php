@@ -15,8 +15,8 @@ $inbox = opendir( "inbox" );
 
 while( ($entry = readdir($inbox)) !== false )
 {
-  //if( $entry != "."  &&  $entry != ".."  ) 
-  if( substr( $entry , 0 , 1 ) == "." )
+  //if( $entry != "."  &&  $entry != ".." 
+  if( substr( $entry , 0 , 1 ) != "." )
   {
     $input_file = $entry; 
     $input_type = substr( $input_file , strrpos($input_file,'.')+1 );
