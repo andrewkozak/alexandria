@@ -136,13 +136,7 @@ function submitTags()
   for( var i = 0 ; i < changed_tags.length ; i++ )
   {
     var id = changed_tags[i];
-//console.log( "Submitting tags for: " + id );
     var tags = $('div.tags#tags_' + id ).html().split(',');
-//console.log( "These tags: " );
-//for( var j = 0 ; j < tags.length ; j++ )
-//{
-//  console.log( tags[j] );
-//}
     var jqxhr = $.ajax(
     {
       url: "actions/update_tags.php" ,
@@ -151,8 +145,6 @@ function submitTags()
     })
     .done( function( response )
     {
- //     console.log( "AJAX success" ); 
-   //   console.log( response );
       clearChangedTags( id )
     })
     .fail( function() 

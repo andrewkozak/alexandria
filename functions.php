@@ -5,6 +5,11 @@
 
 
 
+// Inclusions
+require_once( 'config.php');
+
+
+
 /**
  *  MySQL
  */

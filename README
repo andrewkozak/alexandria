@@ -9,3 +9,6 @@ Alexandria Media Management Library
 0.c. Open config.php and fill in environment details
 0.d. Chmod the TimThumb extension's /cache directory 
      $ chmod -R 777 third-party/timthumb/cache
+0.e. Until a better solution is determined, chmod the following:
+     $ chmod -R 777 stacks
+     $ chmod -R 777 inbox

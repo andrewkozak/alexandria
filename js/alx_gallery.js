@@ -1,6 +1,6 @@
 $(document).ready( function()
 {
-
+  //TODO Try to smooth resizing by only triggering on even window widths
   //if( $(window).width % 2 == 0 )
   //{
     resetThumbSize();
@@ -8,6 +8,7 @@ $(document).ready( function()
 
   $(window).resize( function()
   {
+    //TODO Try to smooth resizing by only triggering on even window widths
     //if( $(window).width % 2 == 0 )
     //{ 
       resetThumbSize();
@@ -41,6 +42,9 @@ $(document).ready( function()
    
     onUpdate : function()
     {
+      var href = this.href.replace( fs_root + 'stacks/' , '' ).replace( /\..{0,5}$/i , '' );
+      while( href.match('/') ){ href = href.replace( '/' , '' ); }
+      $('input#input_'+href).focus();
       submitTags();
     } ,
  
@@ -59,7 +63,7 @@ $(document).ready( function()
       var tags = $('div.tags#tags_' + href ).html().split(',');
       
       // Begin markup for input box
-      var box = '<script type="text/javascript">$(\'input#input_' + href + '\').keyup( function(e){ k = ( e.keyCode ? e.keyCode : e.which ); storeChangedTags(\'' + href + '\'); e.stopImmediatePropagation(); });</script> <input id="input_' + href + '" type="text" class="alx_tags" value="';
+      var box = '<script type="text/javascript">$(\'input#input_' + href + '\').keyup( function(e){ k = ( e.keyCode ? e.keyCode : e.which ); storeChangedTags(\'' + href + '\'); e.stopImmediatePropagation(); if( k == 13 ){ $.fancybox.next(); } });</script> <input id="input_' + href + '" type="text" class="alx_tags" value="';
       
       // Put each tag in input box
       if( tags.length > 0 )
