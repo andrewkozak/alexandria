@@ -1,6 +1,9 @@
 html
 {
   background: #333;
+  font-family: 'Arial' , sans-serif;
+  font-size: 18px;
+  line-height: 22px;
 }
 
 ul, li, a, img
@@ -11,9 +14,21 @@ ul, li, a, img
   color: #CCC;
 }
 
+input
+{
+  padding: 4px;
+  border: 1px solid white;
+  border-radius: 4px;
+  background: #CCC;
+  color: #000;
+  font-size: 18px;
+  line-height: 22px;;
+}
+
 div#global_navbar
 {
   background: #000;
+  height: 40px;
 }
 
 div.tag_input_outer
@@ -36,3 +51,9 @@ outline: 1px solid blue;
     left: 0px;
 */
   }
+
+/* FancyBox Overrides */
+div.fancybox-skin
+{
+  background: #333;
+}

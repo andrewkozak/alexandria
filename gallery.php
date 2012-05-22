@@ -15,22 +15,48 @@ $cnxn = openMySQL();
 if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
 {
   $request_tags_raw = explode( ',' , $_GET['t'] );
+  $request_tags = array();
+  $request_tags_plus = array();
+  $request_tags_minus = array();
   foreach( $request_tags_raw as $raw )
   {
-    if( is_numeric( $raw ) )
+    if( substr( $raw , 0 , 1 ) == "-" )
     {
-      $request_tags[] = trim($raw);
+      if( is_numeric( substr( $raw , 1 ) ) )
+      {
+        $request_tags_minus[] = trim( substr( $raw , 1 ) );
+        $request_tags[] = array( 
+          'bool'=>'minus' , 'id'=>trim( substr( $raw , 1 ) )
+        );
+      }
+    }
+    else if( is_numeric( $raw ) )
+    {
+      $request_tags_plus[] = trim($raw);
+      $request_tags[] = array( 
+        'bool'=>'plus' , 'id'=>trim($raw)
+      );
     }
   }
 
   $tag_names = array();
   $t = "SELECT `name` FROM tags
-        WHERE `id` IN ('" . implode( "','" , $request_tags ) . "')
+        WHERE `id` IN ('" . implode( "','" , $request_tags_plus ) . "')
+        AND `id` NOT IN ('" . implode( "','" , $request_tags_minus ) . "')
         ORDER BY `name`";
   $u = mysql_query( $t , $cnxn );
   while( $v = mysql_fetch_assoc( $u ) )
   {
     $tag_names[] = $v['name'];
+  }
+  
+  $t = "SELECT `name` FROM tags
+        WHERE `id` IN ('" . implode( "','" , $request_tags_minus ) . "')
+        ORDER BY `name`";
+  $u = mysql_query( $t , $cnxn );
+  while( $v = mysql_fetch_assoc( $u ) )
+  {
+    $tag_names[] = '-' . $v['name'];
   }
   
   $q = "";
@@ -48,15 +74,14 @@ if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
                ON i.id = i2t.item_id
              WHERE ";
     }
-    $q .= "i.id IN (  
+    $q .= "i.id " . ( $rt['bool'] == 'minus' ? "NOT " : "" ) . "IN (  
              SELECT ti2t.item_id 
                FROM tags AS t
                  JOIN items_to_tags AS ti2t
                    ON t.id = ti2t.tag_id
-             WHERE t.id = '{$rt}' )";
+             WHERE t.id = '{$rt['id']}' )";
   }   
   $q .= " GROUP BY i.id";
-
   $r = mysql_query( $q , $cnxn );
 }
 else
@@ -66,6 +91,7 @@ else
   $r = mysql_query( $q , $cnxn );
 }
 
+$images = array();
 while( $s = mysql_fetch_assoc( $r ) )
 {
   $t = "SELECT t.name
@@ -198,8 +224,6 @@ function submitTags()
     })
     .done( function( response )
     {
-console.log( "AJAX Success" );
-console.log( response );
       clearChangedTags( id );
     })
     .fail( function() 

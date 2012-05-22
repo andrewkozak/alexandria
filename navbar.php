@@ -47,7 +47,7 @@ if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
               data: { 'names': tag_query }
             })
             .done( function( response )
-            {
+            { 
               window.location = 'gallery.php?t=' + response;
             })
             .fail( function() 
