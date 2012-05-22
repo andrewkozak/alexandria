@@ -42,9 +42,24 @@ $(document).ready( function()
    
     onUpdate : function()
     {
+      // Get the hash
       var href = this.href.replace( fs_root + 'stacks/' , '' ).replace( /\..{0,5}$/i , '' );
       while( href.match('/') ){ href = href.replace( '/' , '' ); }
+      
+      // Fill up the overlay
+/*TODO Work on overlays later
+      var tags = $('div#tags_'+href).html().split(',');
+      var span_inner = '';
+for( var j = 0; j < tags.length ; j++ )
+{
+  span_inner += '<span class="overlaid_tag" >' + tags[j] + '</span>';
+}
+      $('span#tags_overlay_'+href).html( span_inner );
+*/
+      // Bring focus() to the input 
       $('input#input_'+href).focus();
+      $('input#input_'+href).val( $('input#input_'+href).val() );
+      // Clear the tagging queue
       submitTags();
     } ,
  
@@ -63,7 +78,7 @@ $(document).ready( function()
       var tags = $('div.tags#tags_' + href ).html().split(',');
       
       // Begin markup for input box
-      var box = '<script type="text/javascript">$(\'input#input_' + href + '\').keyup( function(e){ k = ( e.keyCode ? e.keyCode : e.which ); storeChangedTags(\'' + href + '\'); e.stopImmediatePropagation(); if( k == 13 ){ $.fancybox.next(); } });</script> <input id="input_' + href + '" type="text" class="alx_tags" value="';
+      var box = '<script type="text/javascript">$(\'input#input_' + href + '\').keyup( function(e){ k = ( e.keyCode ? e.keyCode : e.which ); storeChangedTags(\'' + href + '\'); e.stopImmediatePropagation(); if( k == 13 ){ if( e.shiftKey ){ $.fancybox.prev(); } else{ $.fancybox.next(); } } else if( k == 27 ){ $.fancybox.close(); } });</script><div class="tag_input_outer" id="tag_input_outer_' + href + '"><span class="tags_overlay" id="tags_overlay_' + href + '"></span> <input id="input_' + href + '" type="text" class="alx_tags" value="';
       
       // Put each tag in input box
       if( tags.length > 0 )
@@ -78,7 +93,7 @@ $(document).ready( function()
       }
 
       // Close markup for input box
-      box += '" />';
+      box += '" /></div><!-- .tag_input_outer -->';
 
       // Set input box as fancybox title
       this.title = box;

@@ -12,9 +12,42 @@ require( 'functions.php' );
 // Open MySQL
 $cnxn = openMySQL();
 
-// Run a Query and format into image-path (id) and extension (type)
-$q = "SELECT * FROM items";
-$r = mysql_query( $q , $cnxn );
+if( $_GET['t'] )
+{
+  $request_tags_raw = explode( ',' , $_GET['t'] );
+  foreach( $request_tags_raw as $raw )
+  {
+    if( is_numeric( $raw ) )
+    {
+      $request_tags[] = trim($raw);
+    }
+  }
+
+  $tag_names = array();
+  $t = "SELECT `name` FROM tags
+        WHERE `id` IN ('" . implode( "','" , $request_tags ) . "')";
+  $u = mysql_query( $t , $cnxn );
+  while( $v = mysql_fetch_assoc( $u ) )
+  {
+    $tag_names[] = $v['name'];
+  }
+   
+  $q = "SELECT i.id , i.type
+        FROM items AS i
+          JOIN items_to_tags AS i2t
+            ON i.id = i2t.item_id
+        WHERE i2t.tag_id IN ('" .
+          implode( "','" , $request_tags )
+        . "')";
+  $r = mysql_query( $q , $cnxn );
+}
+else
+{
+  // Run a Query and format into image-path (id) and extension (type)
+  $q = "SELECT `id` , `type` FROM items";
+  $r = mysql_query( $q , $cnxn );
+}
+
 while( $s = mysql_fetch_assoc( $r ) )
 {
   $t = "SELECT t.name
@@ -23,8 +56,9 @@ while( $s = mysql_fetch_assoc( $r ) )
             ON i2t.tag_id = t.id
         WHERE i2t.item_id = '{$s['id']}'";
   $u = mysql_query( $t , $cnxn );
+
   $tags = array();
-  while( $v = mysql_fetch_assoc( $u ) )
+  while( $v = mysql_fetch_assoc( $u ) )    
   {
     $tags[] = $v['name'];
   }
@@ -139,13 +173,13 @@ function submitTags()
     var tags = $('div.tags#tags_' + id ).html().split(',');
     var jqxhr = $.ajax(
     {
-      url: "actions/update_tags.php" ,
+      url: "actions/tags/update.php" ,
       type: 'POST' ,
       data: { 'id': id , 'tags': tags }
     })
     .done( function( response )
     {
-      clearChangedTags( id )
+      clearChangedTags( id );
     })
     .fail( function() 
     {
@@ -161,19 +195,12 @@ function submitTags()
 </script>
 <script type='text/javascript' src='js/alx_gallery.js'></script>
 
-<style>
+<!-- Alexandria -->
+<link rel="stylesheet" type="text/css" href="css/main.css" />
 
-ul,li,a,img
-{
-  padding: 0;
-  margin: 0;
-  text-decoration: none;
-}
-
-</style>
- 
 </head>
 <body>
+<?php include( 'navbar.php' ); ?>
 
 <!--
 <h1>Gallery</h1>

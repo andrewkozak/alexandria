@@ -1,0 +1,38 @@
+html
+{
+  background: #333;
+}
+
+ul, li, a, img
+{
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  color: #CCC;
+}
+
+div#global_navbar
+{
+  background: #000;
+}
+
+div.tag_input_outer
+{
+/* outline: 1px solid red; */
+  position: relative;
+}
+  div.tag_input_outer > input
+  {
+    width: 100%;
+    top: 0px;
+    left: 0px;
+  }
+  div.tag_input_outer > span.tag_overlay
+  {
+/*
+    width: 100%;
+outline: 1px solid blue;
+    top: 0px;
+    left: 0px;
+*/
+  }
