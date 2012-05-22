@@ -129,28 +129,31 @@ function applyTags( $id , $tags )
     foreach( $_POST['tags'] as $tag )
     {
       $trimmed_tag = trim( $tag );
-
-      $q = "SELECT `id` , `name` 
-            FROM tags 
-            WHERE `name`='{$trimmed_tag}'";
-
-      if( @mysql_num_rows( $r = mysql_query( $q ) ) !=1 )
+      
+      if( strlen( $trimmed_tag ) > 0 )
       {
-        $q = "INSERT INTO tags ( `name` )
-              VALUES ( '" . mysql_real_escape_string( $trimmed_tag ) . "' )";
-        mysql_query( $q , $cnxn );
-
         $q = "SELECT `id` , `name` 
               FROM tags 
               WHERE `name`='{$trimmed_tag}'";
 
-        if( @mysql_num_rows( $r = mysql_query( $q ) ) !=1 ){ return false; }
+        if( @mysql_num_rows( $r = mysql_query( $q ) ) !=1 )
+        {
+          $q = "INSERT INTO tags ( `name` )
+                VALUES ( '" . mysql_real_escape_string( $trimmed_tag ) . "' )";
+          mysql_query( $q , $cnxn );
+
+          $q = "SELECT `id` , `name` 
+                FROM tags 
+                WHERE `name`='{$trimmed_tag}'";
+
+          if( @mysql_num_rows( $r = mysql_query( $q ) ) !=1 ){ return false; }
+        }
+
+        $s = mysql_fetch_assoc( $r );
+
+        $tag_array[] = array( 'id'=>$s['id'] , 'name'=>$s['name'] );
+        $new_tags[] = $s['id'];
       }
-
-      $s = mysql_fetch_assoc( $r );
-
-      $tag_array[] = array( 'id'=>$s['id'] , 'name'=>$s['name'] );
-      $new_tags[] = $s['id'];
     }
 
     foreach( $tag_array as $t )

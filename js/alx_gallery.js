@@ -1,5 +1,10 @@
 $(document).ready( function()
 {
+  if( $('input#tag_search').val().length > 0 )
+  {
+    $('input#tag_search').focus();
+    $('input#tag_search').val( $('input#tag_search').val() );
+  }
   //TODO Try to smooth resizing by only triggering on even window widths
   //if( $(window).width % 2 == 0 )
   //{

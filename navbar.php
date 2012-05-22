@@ -10,7 +10,7 @@
 <?php
 
 $tag_search = '';
-if( $_GET['t'] )
+if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
 {
   foreach( $tag_names as $t )
   {
@@ -27,33 +27,38 @@ if( $_GET['t'] )
         k = ( e.keyCode ? e.keyCode : e.which );
         if( k == 13 )
         {
-console.log( $(this).val() );
-          var tag_query = new Array;
-          var tag_query_raw = $(this).val().replace(/,?\s?$/ , '').split(',');
-          for( var i = 0 ; i < tag_query_raw.length ; i++ )
+          if( $(this).val().trim().length == 0 )
           {
-            tag_query[ tag_query.length ] = tag_query_raw[i].trim();
+            window.location = 'gallery.php';
           }
-console.log( tag_query );
+          else
+          {
+            var tag_query = new Array;
+            var tag_query_raw = $(this).val().replace(/,?\s?$/ , '').split(',');
+            for( var i = 0 ; i < tag_query_raw.length ; i++ )
+            {
+              tag_query[ tag_query.length ] = tag_query_raw[i].trim();
+            }
 
-          var jqxhr = $.ajax(
-          {
-            url: "actions/tags/names_to_ids.php" ,
-            type: 'POST' ,
-            data: { 'names': tag_query }
-          })
-          .done( function( response )
-          {
-            window.location = 'gallery.php?t=' + response;
-          })
-          .fail( function() 
-          {
-            console.log( "AJAX error" ); 
-          })
-          .always( function() 
-          {
-            //do something;
-          });
+            var jqxhr = $.ajax(
+            {
+              url: "actions/tags/names_to_ids.php" ,
+              type: 'POST' ,
+              data: { 'names': tag_query }
+            })
+            .done( function( response )
+            {
+              window.location = 'gallery.php?t=' + response;
+            })
+            .fail( function() 
+            {
+              console.log( "AJAX error" ); 
+            })
+            .always( function() 
+            {
+              //do something;
+            });
+          }
         }
       });
 

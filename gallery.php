@@ -12,7 +12,7 @@ require( 'functions.php' );
 // Open MySQL
 $cnxn = openMySQL();
 
-if( $_GET['t'] )
+if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
 {
   $request_tags_raw = explode( ',' , $_GET['t'] );
   foreach( $request_tags_raw as $raw )
@@ -25,20 +25,38 @@ if( $_GET['t'] )
 
   $tag_names = array();
   $t = "SELECT `name` FROM tags
-        WHERE `id` IN ('" . implode( "','" , $request_tags ) . "')";
+        WHERE `id` IN ('" . implode( "','" , $request_tags ) . "')
+        ORDER BY `name`";
   $u = mysql_query( $t , $cnxn );
   while( $v = mysql_fetch_assoc( $u ) )
   {
     $tag_names[] = $v['name'];
   }
-   
-  $q = "SELECT i.id , i.type
-        FROM items AS i
-          JOIN items_to_tags AS i2t
-            ON i.id = i2t.item_id
-        WHERE i2t.tag_id IN ('" .
-          implode( "','" , $request_tags )
-        . "')";
+  
+  $q = "";
+  foreach( $request_tags as $rt )
+  {
+    if( strlen( $q ) > 0 )
+    { 
+      $q .= " AND "; 
+    }
+    else 
+    {
+      $q .= "SELECT i.id , i.type
+             FROM items AS i
+             JOIN items_to_tags AS i2t
+               ON i.id = i2t.item_id
+             WHERE ";
+    }
+    $q .= "i.id IN (  
+             SELECT ti2t.item_id 
+               FROM tags AS t
+                 JOIN items_to_tags AS ti2t
+                   ON t.id = ti2t.tag_id
+             WHERE t.id = '{$rt}' )";
+  }   
+  $q .= " GROUP BY i.id";
+
   $r = mysql_query( $q , $cnxn );
 }
 else
@@ -54,7 +72,8 @@ while( $s = mysql_fetch_assoc( $r ) )
         FROM items_to_tags AS i2t
           LEFT JOIN tags AS t
             ON i2t.tag_id = t.id
-        WHERE i2t.item_id = '{$s['id']}'";
+        WHERE i2t.item_id = '{$s['id']}'
+        ORDER BY t.name";
   $u = mysql_query( $t , $cnxn );
 
   $tags = array();
@@ -179,6 +198,8 @@ function submitTags()
     })
     .done( function( response )
     {
+console.log( "AJAX Success" );
+console.log( response );
       clearChangedTags( id );
     })
     .fail( function() 
