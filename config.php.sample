@@ -7,6 +7,12 @@
 
 
 
+/** Development **/
+define( 'DEV_DEBUG' , 'false' );
+
+
+
+
 /** Filesystem **/
 // Use a trailing slash; e.g. www.website.com/gallery/
 define( 'FS_ROOT' , '' );

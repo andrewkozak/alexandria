@@ -4,9 +4,23 @@
  */
 
 
-
 // Inclusions
-require_once( 'config.php');
+require_once( 'config.php' );
+require_once( 'classes/item.php' );
+
+
+/** Development **/
+function debug( $output )
+{
+  if( DEV_DEBUG == true )
+  {
+    print "<pre>";
+    print_r( $output );
+    print "</pre>";
+  }
+
+  return;
+}
 
 
 
@@ -240,6 +254,93 @@ function tagIdToName( $id , $array=false )
 
 
 
+function fileTagToFile( $tag , $array=false )
+{  
+  if( is_array($tag) )
+  {
+    $array = true;
+ 
+    $q = "";
+
+    foreach( $tag as $t )
+    {
+      if( is_array($t) )
+      {  
+        if( strlen($q) > 0 )
+        { 
+          $q .= " AND "; 
+        }
+        else 
+        {
+          $q .= "SELECT i.id , i.type
+                 FROM items AS i
+                   JOIN items_to_tags AS i2t
+                     ON i.id = i2t.item_id
+                 WHERE ";
+        }
+        $q .= "i.id " . ( $t['include'] == false ? "NOT " : "" ) . "IN (  
+               SELECT ti2t.item_id 
+               FROM tags AS t
+                 JOIN items_to_tags AS ti2t
+                   ON t.id = ti2t.tag_id
+               WHERE t.id = '{$t['id']}' )";
+      }   
+      else
+      {
+        return false;
+      }
+    } //foreach( $tag as $t )
+  } //if( is_array($tag) )
+  else
+  {
+    $q = "SELECT i.id , i.type
+          FROM items AS i
+            JOIN items_to_tags AS i2t
+              ON i.id = i2t.item_id
+          WHERE t.id = '{$tag}'";
+  }
+  if( strlen($q) > 0 )
+  {
+    $q .= "GROUP BY i.id";
+  }
+
+  $cnxn = openMySQL();
+  
+  $r = mysql_query( $q , $cnxn );
+  $return_array = array();
+  while( $s = mysql_fetch_assoc( $r ) )
+  {
+    $return_array[] = array( 'id'=>$s['id'] , 'type'=>$s['type'] );
+  }
+
+  closeMySQL( $cnxn );
+
+  return ( $array == true ) ? $return_array : $return_array[0];
+}
+
+
+
+function fileGetTagNames( $id )
+{
+  $cnxn = openMySQL();
+
+  $q = "SELECT t.name
+        FROM items_to_tags AS i2t
+          LEFT JOIN tags AS t
+            ON i2t.tag_id = t.id
+        WHERE i2t.item_id = '{$id}'
+        ORDER BY t.name";
+  $r = mysql_query( $q , $cnxn );
+  $return_tags = array();
+  while( $s = mysql_fetch_assoc( $r ) )
+  {
+    $return_tags[] = $s['name'];
+  }
+
+  closeMySQL( $cnxn );
+
+  return $return_tags;
+}
 
 
 ?>

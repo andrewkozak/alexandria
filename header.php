@@ -1,10 +1,13 @@
 <?php
 
-// Open MySQL
-$cnxn = openMySQL();
-
 if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
 {
+  $get_tags = explode( ',' , $_GET['t'] );
+  foreach( $get_tags as $gt )
+  {
+    $taggers[] = new AlexandriaTag( $gt );  
+  }  
+
   $request_tags_raw = explode( ',' , $_GET['t'] );
   $request_tags = array();
   $request_tags_plus = array();
@@ -13,20 +16,16 @@ if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
   {
     if( substr( $raw , 0 , 1 ) == "-" )
     {
-      if( is_numeric( substr( $raw , 1 ) ) )
+      if( is_numeric( $tag_id = substr( trim($raw) , 1 ) ) )
       {
-        $request_tags_minus[] = trim( substr( $raw , 1 ) );
-        $request_tags[] = array( 
-          'bool'=>'minus' , 'id'=>trim( substr( $raw , 1 ) )
-        );
+        $request_tags_minus[] = $tag_id;
+        $request_tags[] = array( 'include'=>false , 'id'=>$tag_id );
       }
     }
-    else if( is_numeric( $raw ) )
+    else if( is_numeric( $tag_id = trim($raw) ) )
     {
-      $request_tags_plus[] = trim($raw);
-      $request_tags[] = array( 
-        'bool'=>'plus' , 'id'=>trim($raw)
-      );
+      $request_tags_plus[] = $tag_id;
+      $request_tags[] = array( 'include'=>true , 'id'=>$tag_id );
     }
   }
 
@@ -34,140 +33,51 @@ if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
   {
     $tag_names = tagIdToName( $request_tags_plus , true );
   }
+  else
+  {
+    $tag_names = array();
+  }
+
   foreach( $request_tags_minus as $rtm )
   {
     $tag_names[] = '-' . tagIdToName( $rtm );
   }
 
-function fileTagToName( $tag , $array=false )
-{  
-  if( is_array($tag) )
-  {
-    $q = "";
-
-    foreach( $tag as $t )
-    {
-      if( is_array($t) )
-      {  
-        if( strlen($q) > 0 )
-        { 
-          $q .= " AND "; 
-        }
-        else 
-        {
-          $q .= "SELECT i.id , i.type
-                 FROM items AS i
-                   JOIN items_to_tags AS i2t
-                     ON i.id = i2t.item_id
-                 WHERE ";
-        }
-        $q .= "i.id " . ( $t['include'] == false ? "NOT " : "" ) . "IN (  
-               SELECT ti2t.item_id 
-               FROM tags AS t
-                 JOIN items_to_tags AS ti2t
-                   ON t.id = ti2t.tag_id
-               WHERE t.id = '{$t['id']}' )";
-      }   
-      else
-      {
-        return false;
-      }
-    } //foreach( $tag as $t )
-  } //if( is_array($tag) )
-  else
-  {
-    $q = "SELECT i.id , i.type
-          FROM items AS i
-            JOIN items_to_tags AS i2t
-              ON i.id = i2t.item_id
-          WHERE t.id = '{$tag}'";
-  }
-  if( strlen($q) > 0 )
-  {
-    $q .= "GROUP BY i.id";
-  }
-
-  $cnxn = openMySQL();
-  
-  $r = mysql_query( $q , $cnxn );
-  while( $s = mysql_fetch_assoc( $r ) )
-  {
-    $return_array = 
-  }
-
-  closeMySQL( $cnxn );
-
-  return 
-}
-
-  $cnxn = openMySQL();
-
-  $q = "";
-  foreach( $request_tags as $rt )
-  {
-    if( strlen( $q ) > 0 )
-    { 
-      $q .= " AND "; 
-    }
-    else 
-    {
-      $q .= "SELECT i.id , i.type
-             FROM items AS i
-             JOIN items_to_tags AS i2t
-               ON i.id = i2t.item_id
-             WHERE ";
-    }
-    $q .= "i.id " . ( $rt['bool'] == 'minus' ? "NOT " : "" ) . "IN (  
-             SELECT ti2t.item_id 
-               FROM tags AS t
-                 JOIN items_to_tags AS ti2t
-                   ON t.id = ti2t.tag_id
-             WHERE t.id = '{$rt['id']}' )";
-  }   
-  $q .= " GROUP BY i.id";
-  $r = mysql_query( $q , $cnxn );
+  $files_array = fileTagToFile( $request_tags );
 }
 else
 {
+  $cnxn = openMySQL();
   // Run a Query and format into image-path (id) and extension (type)
   $q = "SELECT `id` , `type` FROM items";
   $r = mysql_query( $q , $cnxn );
+  while( $s = mysql_fetch_assoc( $r ) )
+  {
+    $files_array[] = $s;
+  }
+  closeMySQL( $cnxn );
 }
 
 $images = array();
-while( $s = mysql_fetch_assoc( $r ) )
+$items = array();
+foreach( $files_array as $file )
 {
-  $t = "SELECT t.name
-        FROM items_to_tags AS i2t
-          LEFT JOIN tags AS t
-            ON i2t.tag_id = t.id
-        WHERE i2t.item_id = '{$s['id']}'
-        ORDER BY t.name";
-  $u = mysql_query( $t , $cnxn );
-
-  $tags = array();
-  while( $v = mysql_fetch_assoc( $u ) )    
-  {
-    $tags[] = $v['name'];
-  }
+  $items[] = new AlexandriaItem( $file['id'] , $file['type'] );
 
   $images[] = array(
-    'id'=>$s['id'] ,
-    'path'=>FS_ROOT . "stacks/" . implode( '/' , createPathArray( $s['id'] ) ) . "." . $s['type'] ,
-    'tags'=>trim( implode( ',' , $tags ) , ',' )
+    'id'=>$file['id'] ,
+    'path'=>FS_ROOT . "stacks/" . implode( '/' , createPathArray($file['id']) ) . "." . $file['type'] ,
+    'tags'=>trim( implode( ',' , fileGetTagNames($file['id']) ) , ',' )
   );
 }
-
-// Close MySQL
-closeMySQL( $cnxn );
-
-
 
 ?>
 <html>
 <head>
 
-<title>Gallery</title>
+<title><?php 
+  print strlen($page_title) > 0 ? $page_title . ' | ' : ""; 
+?>Alexandria</title>
 
 <!-- Alexandria -->
 <link rel="stylesheet" type="text/css" href="css/reset.css" />
