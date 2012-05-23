@@ -193,4 +193,53 @@ function applyTags( $id , $tags )
 
 
 
+/**
+ *  Tags :: ID to Name
+ *
+ *  Accepts an ID or an array of ID's and returns
+ *  a Name or an array of Names.
+ */
+function tagIdToName( $id , $array=false )
+{
+  if( is_array( $id ) )
+  {
+    foreach( $id as $i )
+    { 
+      if( is_numeric( trim($i) ) )
+      {
+        $query_array[] = trim($i);
+      }
+    }
+  }
+  else
+  {
+    if( is_numeric( trim($id) ) )
+    {
+      $query_array[] = trim($id);
+    }
+  }
+
+  $cnxn = openMySQL();
+
+  $q = "SELECT tags.name
+        FROM tags
+        WHERE tags.id IN ('" . implode( "','" , $query_array ) . "')
+        ORDER BY tags.name";
+  $r = mysql_query( $q , $cnxn );
+  $return_array = array();
+  while( $s = mysql_fetch_assoc($r) )
+  {
+    $return_array[] = $s['name'];
+  }
+
+  closeMySQL( $cnxn );
+
+  return (  count($return_array) > 1  ||  $array == true  )
+    ? $return_array : $return_array[0];
+}
+
+
+
+
+
 ?>

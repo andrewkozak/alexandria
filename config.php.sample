@@ -8,6 +8,7 @@
 
 
 /** Filesystem **/
+// Use a trailing slash; e.g. www.website.com/gallery/
 define( 'FS_ROOT' , '' );
 
 
@@ -17,6 +18,11 @@ define( 'MYSQL_LOCATION' , '' );
 define( 'MYSQL_DATABASE' , '' );
 define( 'MYSQL_USERNAME' , '' );
 define( 'MYSQL_PASSWORD' , '' );
+
+
+
+/** Globals **/
+define( 'IMAGE_SIZE' , '200' );
 
 
 
