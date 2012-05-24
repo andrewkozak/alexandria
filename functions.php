@@ -12,7 +12,7 @@ require_once( 'classes/item.php' );
 /** Development **/
 function debug( $output )
 {
-  if( DEV_DEBUG == true )
+  if( DEV_DEBUG == 'true' )
   {
     print "<pre>";
     print_r( $output );
