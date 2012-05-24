@@ -24,6 +24,47 @@ input
   font-size: 18px;
   line-height: 22px;;
 }
+  input.alx_tags
+  {
+    display: none;
+  }
+  input.alx_tags_tmp
+  {
+    display: inline;
+  }
+
+div.div_tags
+{
+  padding: 10px 2px;
+}
+
+span.tag_tag
+{
+  background: #999;
+  border: #FFF;
+  border-radius: 5px;
+  padding: 5px 0;
+float: left;
+  margin: 2px;
+}
+  span.tag_tag > a
+  {
+    font-size: 18px;
+    line-height: 22px;
+    margin: 5px 0;
+    padding: 10px;
+    color: #000;
+    text-decoration: none;
+  }
+  
+  span.tag_remove
+  { 
+    background: white;
+    border: 1px solid black;
+    border-radius: 15px;
+    padding: 4px;
+    margin: 0 8px 0 0 ;
+  }
 
 div#global_navbar
 {

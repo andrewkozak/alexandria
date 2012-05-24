@@ -1,5 +1,7 @@
 <?php
 
+$page_title = "Gallery";
+
 require_once( 'config.php' );
 require_once( 'functions.php' );
 require_once( 'classes/include.php' );
@@ -15,6 +17,7 @@ include( 'header.php' );
 
 foreach( $items as $i )
 {
+debug( $i );
 
 ?>
   <li style="float:left;">

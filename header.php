@@ -58,17 +58,18 @@ else
   closeMySQL( $cnxn );
 }
 
-$images = array();
+//TODO $images = array();
 $items = array();
 foreach( $files_array as $file )
 {
   $items[] = new AlexandriaItem( $file['id'] , $file['type'] );
-
+/*TODO
   $images[] = array(
     'id'=>$file['id'] ,
     'path'=>FS_ROOT . "stacks/" . implode( '/' , createPathArray($file['id']) ) . "." . $file['type'] ,
     'tags'=>trim( implode( ',' , fileGetTagNames($file['id']) ) , ',' )
   );
+*/
 }
 
 ?>
@@ -76,7 +77,8 @@ foreach( $files_array as $file )
 <head>
 
 <title><?php 
-  print strlen($page_title) > 0 ? $page_title . ' | ' : ""; 
+  print (  isset($page_title)  &&  strlen($page_title) > 0  ) 
+    ? $page_title . ' | ' : ""; 
 ?>Alexandria</title>
 
 <!-- Alexandria -->
@@ -107,6 +109,97 @@ thumb_size = '200';
 
 
 
+function newSubmitTags( id )
+{
+  // Get the tags as the value of the hidden input
+  var tags = $('input#input_'+id).val();
+ 
+  // Remove any spaces around commas
+  while( tags.match( /(\s,|,\s)/ ) )
+  {
+    tags = tags.replace( /(\s,|,\s)/ , ',' );
+  }
+  
+  // Remove trailing comma
+  tags = tags.trim().replace( /,$/ , '' );
+ 
+  // Split the cleaned array on commas 
+  var tags = tags.split(',');
+
+  // Send AJAX request to update the tags for the item
+console.log( "newSubmitTags is sending: " + tags );
+  var jqxhr = $.ajax(
+  {
+    url: "actions/tags/update.php" ,
+    type: 'POST' ,
+    async: false ,
+    data: { 'id': id , 'tags': tags }
+  })
+  .done( function( response )
+  {
+    //console.log( "AJAX success" );
+console.log( id );
+console.log( tags );
+console.log('div.tags#tags_'+id);
+    $('div.tags#tags_'+id).html( tags.join(',') );
+console.log('div.tags#tags_'+id);
+  })
+  .fail( function() 
+  {
+    console.log( "AJAX error" ); 
+  })
+  .always( function() 
+  { 
+    //console.log( "AJAX complete" ); 
+  });
+  
+  return;
+}
+
+
+
+
+function tagsToDiv( id )
+{
+  var tags = $('input#input_'+id).val();
+  while( tags.match( /(\s,|,\s)/ ) )
+  {
+    tags = tags.replace( /(\s,|,\s)/ , ',' );
+  }
+  tags = tags.replace( /,$/ , '' );
+  
+  var tags = tags.split(',');
+
+  var div_html = '';
+  for( var i = 0 ; i < tags.length ; i++ )
+  {
+    if( tags[i].length > 0 )
+    {
+      var jqxhr = $.ajax(
+      {
+        url: "actions/tags/get_id.php" ,
+        type: 'POST' ,
+        async: false ,
+        data: { 'name': tags[i] }
+      })
+      .done( function( response )
+      {
+        div_html += '<span id="tag_tag_' + response + '" class="tag_tag"><a href="gallery.php?t=' + response + '">' + tags[i] + '</a><span class="tag_remove" onclick="console.log( \'Removing ' + response + ' from ' + id + '\' ); removeTagFromItem( ' + response ' + ' , ' + id + ' );">X</span></span>';
+      })
+      .fail( function() 
+      {
+        console.log( "AJAX error" ); 
+      })
+    }
+  }
+  
+  $('div#div_tags_'+id).html( div_html + '<div style="clear:both;"></div>' );
+
+  return;
+}
+
+
+
 function storeChangedTags( id )
 {
   var curr = $('input#input_'+id).val().replace(/,[\s]*$/,'');
@@ -117,16 +210,6 @@ function storeChangedTags( id )
   {
     changed_tags[ changed_tags.length ] = id;
   }
-}
-
-
-
-function clearChangedTags( id )
-{
-  changed_tags = $.grep( changed_tags , function(target) 
-  {
-    return target != id;
-  });
 }
 
 
@@ -160,33 +243,6 @@ function resetThumbSize()
   {
     $('img.alx_thumbs').width( up_size );
     $('img.alx_thumbs').height( up_size );
-  }
-}
-
-function submitTags()
-{
-  for( var i = 0 ; i < changed_tags.length ; i++ )
-  {
-    var id = changed_tags[i];
-    var tags = $('div.tags#tags_' + id ).html().split(',');
-    var jqxhr = $.ajax(
-    {
-      url: "actions/tags/update.php" ,
-      type: 'POST' ,
-      data: { 'id': id , 'tags': tags }
-    })
-    .done( function( response )
-    {
-      clearChangedTags( id );
-    })
-    .fail( function() 
-    {
-      console.log( "AJAX error" ); 
-    })
-    .always( function() 
-    { 
-      //console.log( "AJAX complete" ); 
-    });
   }
 }
 
