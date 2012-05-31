@@ -1,3 +1,22 @@
 Big messy TODO file...
 
 Change the tag input area into a textarea.
+
+
+
+----- NOTES on Tagging
+
+
+<img>
+<input #input_tags> //hidden
+<div #div_tag_container>
+  <div #div_tags>
+  <input #input_tags_tmp>
+</div>
+
+onload
+
+#input_tags : alpha, bravo, charlie, 
+#div_tags : <span><a href="alpha">alpha</a><span onclick=removeTag>X</span></span> ...
+#input_tags_tmp : 
+ 

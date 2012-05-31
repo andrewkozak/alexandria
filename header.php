@@ -2,16 +2,11 @@
 
 if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
 {
-  $get_tags = explode( ',' , $_GET['t'] );
-  foreach( $get_tags as $gt )
-  {
-    $taggers[] = new AlexandriaTag( $gt );  
-  }  
-
   $request_tags_raw = explode( ',' , $_GET['t'] );
   $request_tags = array();
   $request_tags_plus = array();
   $request_tags_minus = array();
+  
   foreach( $request_tags_raw as $raw )
   {
     if( substr( $raw , 0 , 1 ) == "-" )
@@ -48,28 +43,18 @@ if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
 else
 {
   $cnxn = openMySQL();
-  // Run a Query and format into image-path (id) and extension (type)
   $q = "SELECT `id` , `type` FROM items";
   $r = mysql_query( $q , $cnxn );
-  while( $s = mysql_fetch_assoc( $r ) )
-  {
-    $files_array[] = $s;
-  }
+  while( $s = mysql_fetch_assoc( $r ) ){ $files_array[] = $s; }
   closeMySQL( $cnxn );
 }
 
-//TODO $images = array();
 $items = array();
-foreach( $files_array as $file )
+foreach( $files_array as $f )
 {
-  $items[] = new AlexandriaItem( $file['id'] , $file['type'] );
-/*TODO
-  $images[] = array(
-    'id'=>$file['id'] ,
-    'path'=>FS_ROOT . "stacks/" . implode( '/' , createPathArray($file['id']) ) . "." . $file['type'] ,
-    'tags'=>trim( implode( ',' , fileGetTagNames($file['id']) ) , ',' )
-  );
-*/
+  $i = new AlexandriaItem( $f['id'] );
+  $i->type = $f['type'];  
+  $items[] = $i;
 }
 
 ?>
@@ -104,11 +89,58 @@ foreach( $files_array as $file )
 <script type='text/javascript'>
 
 fs_root = '<?php print FS_ROOT; ?>';
-changed_tags = new Array;
-thumb_size = '200';
+thumb_size = '<?php print IMAGE_SIZE; ?>';
 
 
 
+function alxSubmitTags( id )
+{
+console.log( "Submitting tags for: " + id );
+
+  var tmp = $('input#alx_input_tmp_'+id).val();
+
+  var names = $('div#alx_div_tag_names_'+id).html();
+
+  var graphics = $('div#alx_div_tag_graphics_'+id).html();
+
+  var jqxhr = $.ajax(
+  {
+    url: "actions/item/update_tags.php" ,
+    type: 'POST' ,
+    async: false ,
+    data: { 'id': id }
+  })
+  .done( function( response )
+  {
+console.log( "AJAX success" );
+    alxShowTags( id );
+  })
+
+
+  return;
+}
+
+
+
+function alxShowTags( id )
+{
+console.log( "Showing tags for :" + id );
+
+  var tmp = $('input#alx_input_tmp_'+id).val();
+console.log( "In input#tmp:" );
+console.log( tmp );
+  var names = $('div#alx_div_tag_names_'+id).html();
+console.log( "In div#names:" );
+console.log( names );
+  var graphics = $('div#alx_div_tag_graphics_'+id).html();
+console.log( "In div#graphics:" );
+console.log( graphics );
+
+  return;
+}
+
+
+/*
 function newSubmitTags( id )
 {
   // Get the tags as the value of the hidden input
@@ -184,7 +216,7 @@ function tagsToDiv( id )
       })
       .done( function( response )
       {
-        div_html += '<span id="tag_tag_' + response + '" class="tag_tag"><a href="gallery.php?t=' + response + '">' + tags[i] + '</a><span class="tag_remove" onclick="console.log( \'Removing ' + response + ' from ' + id + '\' ); removeTagFromItem( ' + response ' + ' , ' + id + ' );">X</span></span>';
+        div_html += '<span id="tag_tag_' + response + '" class="tag_tag"><a href="gallery.php?t=' + response + '">' + tags[i] + '</a><span class="tag_remove" onclick="console.log( \'Removing ' + response + ' from ' + id + '\' ); removeTagFromItem( ' + response + ' , ' + id + ' );">X</span></span>';
       })
       .fail( function() 
       {
@@ -212,7 +244,7 @@ function storeChangedTags( id )
   }
 }
 
-
+*/
 
 function resetThumbSize()
 {
@@ -236,13 +268,13 @@ function resetThumbSize()
   
   if( Math.abs( thumb_size - down_size ) < Math.abs( thumb_size - up_size ) )
   {
-    $('img.alx_thumbs').width( down_size );
-    $('img.alx_thumbs').height( down_size );
+    $('img.alx_img_thumbs').width( down_size );
+    $('img.alx_img_thumbs').height( down_size );
   }
   else
   {
-    $('img.alx_thumbs').width( up_size );
-    $('img.alx_thumbs').height( up_size );
+    $('img.alx_img_thumbs').width( up_size );
+    $('img.alx_img_thumbs').height( up_size );
   }
 }
 

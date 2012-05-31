@@ -3,11 +3,8 @@
  *  Functions Warehouse (for now)
  */
 
-
 // Inclusions
 require_once( 'config.php' );
-require_once( 'classes/item.php' );
-
 
 /** Development **/
 function debug( $output )

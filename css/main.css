@@ -24,21 +24,21 @@ input
   font-size: 18px;
   line-height: 22px;;
 }
-  input.alx_tags
+  input.alx_input_tags
   {
     display: none;
   }
-  input.alx_tags_tmp
+  input.alx_input_tmp
   {
     display: inline;
   }
 
-div.div_tags
+div.alx_div_tags
 {
   padding: 10px 2px;
 }
 
-span.tag_tag
+span.alx_span_tag
 {
   background: #999;
   border: #FFF;
@@ -47,7 +47,7 @@ span.tag_tag
 float: left;
   margin: 2px;
 }
-  span.tag_tag > a
+  span.alx_span_tag > a
   {
     font-size: 18px;
     line-height: 22px;
@@ -57,7 +57,7 @@ float: left;
     text-decoration: none;
   }
   
-  span.tag_remove
+  span.alx_span_tag_remove
   { 
     background: white;
     border: 1px solid black;
@@ -66,24 +66,24 @@ float: left;
     margin: 0 8px 0 0 ;
   }
 
-div#global_navbar
+div#alx_nav
 {
   background: #000;
   height: 40px;
 }
 
-div.tag_input_outer
+div.alx_div_tag_outer
 {
 /* outline: 1px solid red; */
   position: relative;
 }
-  div.tag_input_outer > input
+  div.alx_div_tag_outer > input
   {
     width: 100%;
     top: 0px;
     left: 0px;
   }
-  div.tag_input_outer > span.tag_overlay
+  div.alx_div_tag_outer > span.alx_span_tag_overlay
   {
 /*
     width: 100%;
