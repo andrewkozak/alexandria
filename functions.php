@@ -3,8 +3,6 @@
  *  Functions Warehouse (for now)
  */
 
-// Inclusions
-require_once( 'config.php' );
 
 /** Development **/
 function debug( $output )
@@ -338,6 +336,7 @@ function fileGetTagNames( $id )
 
   return $return_tags;
 }
+
 
 
 ?>

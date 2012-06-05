@@ -88,7 +88,7 @@ foreach( $files_array as $f )
 <!-- Alexandria -->
 <script type='text/javascript'>
 
-fs_root = '<?php print FS_ROOT; ?>';
+www_root = '<?php print WWW_ROOT; ?>';
 thumb_size = '<?php print IMAGE_SIZE; ?>';
 
 
@@ -100,7 +100,7 @@ console.log( "Submitting tags for: " + id );
   var tmp = $('input#alx_input_tmp_'+id).val();
 
   var names = $('div#alx_div_tag_names_'+id).html();
-
+  
   var graphics = $('div#alx_div_tag_graphics_'+id).html();
 
   var jqxhr = $.ajax(
@@ -108,14 +108,14 @@ console.log( "Submitting tags for: " + id );
     url: "actions/item/update_tags.php" ,
     type: 'POST' ,
     async: false ,
-    data: { 'id': id }
+    data: { 'item_id': id , 'tag_names': names }
   })
   .done( function( response )
   {
-console.log( "AJAX success" );
     alxShowTags( id );
-  })
-
+console.log( "Tags successfully submitted." );
+console.log( response );
+  });
 
   return;
 }
@@ -124,127 +124,20 @@ console.log( "AJAX success" );
 
 function alxShowTags( id )
 {
-console.log( "Showing tags for :" + id );
-
-  var tmp = $('input#alx_input_tmp_'+id).val();
-console.log( "In input#tmp:" );
-console.log( tmp );
-  var names = $('div#alx_div_tag_names_'+id).html();
-console.log( "In div#names:" );
-console.log( names );
-  var graphics = $('div#alx_div_tag_graphics_'+id).html();
-console.log( "In div#graphics:" );
-console.log( graphics );
-
-  return;
-}
-
-
-/*
-function newSubmitTags( id )
-{
-  // Get the tags as the value of the hidden input
-  var tags = $('input#input_'+id).val();
- 
-  // Remove any spaces around commas
-  while( tags.match( /(\s,|,\s)/ ) )
-  {
-    tags = tags.replace( /(\s,|,\s)/ , ',' );
-  }
+  var tags = $('div#alx_div_tag_names_'+id).html().split(',');
   
-  // Remove trailing comma
-  tags = tags.trim().replace( /,$/ , '' );
- 
-  // Split the cleaned array on commas 
-  var tags = tags.split(',');
-
-  // Send AJAX request to update the tags for the item
-console.log( "newSubmitTags is sending: " + tags );
-  var jqxhr = $.ajax(
-  {
-    url: "actions/tags/update.php" ,
-    type: 'POST' ,
-    async: false ,
-    data: { 'id': id , 'tags': tags }
-  })
-  .done( function( response )
-  {
-    //console.log( "AJAX success" );
-console.log( id );
-console.log( tags );
-console.log('div.tags#tags_'+id);
-    $('div.tags#tags_'+id).html( tags.join(',') );
-console.log('div.tags#tags_'+id);
-  })
-  .fail( function() 
-  {
-    console.log( "AJAX error" ); 
-  })
-  .always( function() 
-  { 
-    //console.log( "AJAX complete" ); 
-  });
-  
-  return;
-}
-
-
-
-
-function tagsToDiv( id )
-{
-  var tags = $('input#input_'+id).val();
-  while( tags.match( /(\s,|,\s)/ ) )
-  {
-    tags = tags.replace( /(\s,|,\s)/ , ',' );
-  }
-  tags = tags.replace( /,$/ , '' );
-  
-  var tags = tags.split(',');
-
-  var div_html = '';
+  var new_graphics = '';
   for( var i = 0 ; i < tags.length ; i++ )
   {
-    if( tags[i].length > 0 )
-    {
-      var jqxhr = $.ajax(
-      {
-        url: "actions/tags/get_id.php" ,
-        type: 'POST' ,
-        async: false ,
-        data: { 'name': tags[i] }
-      })
-      .done( function( response )
-      {
-        div_html += '<span id="tag_tag_' + response + '" class="tag_tag"><a href="gallery.php?t=' + response + '">' + tags[i] + '</a><span class="tag_remove" onclick="console.log( \'Removing ' + response + ' from ' + id + '\' ); removeTagFromItem( ' + response + ' , ' + id + ' );">X</span></span>';
-      })
-      .fail( function() 
-      {
-        console.log( "AJAX error" ); 
-      })
-    }
+    new_graphics += '<span class="alx_span_tag"><span class="alx_span_tag_name">' + tags[i] + '</span></span>';
   }
-  
-  $('div#div_tags_'+id).html( div_html + '<div style="clear:both;"></div>' );
+
+  $('div#alx_div_tag_graphics_'+id).html( new_graphics + '<div style="clear:both;"></div>' );
 
   return;
 }
 
 
-
-function storeChangedTags( id )
-{
-  var curr = $('input#input_'+id).val().replace(/,[\s]*$/,'');
-  while( curr.match(/, /) ){ curr = curr.replace( /, / , ',' ); }
-  $('div#tags_'+id).html( curr );
-  
-  if( $.inArray( id , changed_tags ) == -1 )
-  {
-    changed_tags[ changed_tags.length ] = id;
-  }
-}
-
-*/
 
 function resetThumbSize()
 {

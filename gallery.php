@@ -3,8 +3,8 @@
 $page_title = "Gallery";
 
 require_once( 'config.php' );
-require_once( 'functions.php' );
-require_once( 'classes/include.php' );
+require_once( FS_ROOT . 'functions.php' );
+require_once( FS_ROOT . 'classes/include.php' );
 
 include( 'header.php' );
 

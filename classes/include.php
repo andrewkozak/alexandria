@@ -1,6 +1,6 @@
 <?php
 
-require_once( 'classes/item.php' );
-require_once( 'classes/tag.php' );
+require_once( FS_ROOT . 'classes/item.php' );
+require_once( FS_ROOT . 'classes/tag.php' );
 
 ?>

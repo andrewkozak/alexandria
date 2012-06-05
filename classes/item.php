@@ -72,13 +72,34 @@ class AlexandriaItem
     {
       if( $this->getItemType() == false ){ return false; }
       
-      $this->src = FS_ROOT . "stacks/" . $this->getPath( true ) . "." . $this->type;
+      $this->src = WWW_ROOT . "stacks/" . $this->getPath( true ) . "." . $this->type;
     }
 
     return $this->src;
   }
  
   
+
+  function clearItemTags()
+  {
+    if( !isset($this->id) ){ return false; }
+
+    $this->tags = array();
+    $this->tag_ids = array();
+    $this->tag_names = array();
+
+    $cnxn = openMySQL();
+
+    $q = "DELETE FROM items_to_tags 
+          WHERE items_to_tags.item_id = '{$this->id}'";
+    mysql_query( $q , $cnxn );
+
+    closeMySQL( $cnxn );
+
+    return;  
+  }
+
+ 
 
   function getItemTags( $force=false )
   {
@@ -165,6 +186,86 @@ class AlexandriaItem
     }
 
     return $array == false ? $path_array : implode( '/' , $path_array );
+  }
+
+
+
+  function setItemTags( $tags , $type=null )
+  {
+    $this->clearItemTags();
+    
+    $new_tags = explode( ',' , $tags );
+    
+    if( count($new_tags) > 0 )
+    { 
+      if(  $type != 'id'  &&  $type != 'name'  )
+      {
+        $all_numbers = true;
+
+        foreach( $new_tags as $nt )
+        {
+          if( $all_numbers == true )
+          {
+            if( !is_numeric($nt) )
+            {
+              $all_numbers = false;
+            }          
+          }
+        }
+        
+        $type = $all_numbers == true ? 'id' : 'name';
+      }
+
+      $cnxn = openMySQL();
+ 
+      $mysql_tags = array();
+      if( $type == 'name' )
+      {
+        foreach( $new_tags as $nt )
+        {
+          $q = "SELECT COUNT(*)
+                FROM tags
+                WHERE tags.name='{$nt}'";
+          $r = mysql_query( $q , $cnxn );
+          $s = mysql_fetch_assoc( $r );
+          
+          if( $s['COUNT(*)'] == 0 )
+          {
+            $t = "INSERT INTO tags ( `name` )
+                  VALUES ( '{$nt}' )";
+            mysql_query( $t , $cnxn );
+          }
+          
+          $w = "SELECT tags.id
+                FROM tags
+                WHERE tags.name='{$nt}'";
+          $x = mysql_query( $w , $cnxn ); 
+          $y = mysql_fetch_assoc( $x );
+          
+          $mysql_tags[] = $y['id'];
+        }
+      }
+      else if( $type == 'id' )
+      {
+        $mysql_tags = $new_tags;
+      }
+  
+      sort( $mysql_tags );
+      $mysql_tags = array_unique( $mysql_tags );
+
+      foreach( $mysql_tags as $mt )
+      {
+        $q = "INSERT INTO items_to_tags ( `item_id` , `tag_id` )
+              VALUES ( '{$this->id}' , '{$mt}' )";
+        mysql_query( $q , $cnxn );
+      } 
+
+      closeMySQL( $cnxn );
+
+      $this->getItemTags(true);
+    }
+
+    return;
   }
 
 

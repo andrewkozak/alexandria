@@ -37,7 +37,7 @@ $(document).ready( function()
    
     onUpdate : function()
     {
-      var href = this.href.replace( fs_root + 'stacks/' , '' ).replace( /\..{0,5}$/i , '' );
+      var href = this.href.replace( www_root + 'stacks/' , '' ).replace( /\..{0,5}$/i , '' );
       while( href.match('/') ){ href = href.replace( '/' , '' ); }
       
       $('input#alx_input_tmp_'+href).focus();
@@ -46,15 +46,13 @@ $(document).ready( function()
  
     beforeClose : function()
     {
-      var href = this.href.replace( fs_root + 'stacks/' , '' ).replace( /\..{0,5}$/i , '' );
+      var href = this.href.replace( www_root + 'stacks/' , '' ).replace( /\..{0,5}$/i , '' );
       while( href.match('/') ){ href = href.replace( '/' , '' ); }
- 
-   //   newSubmitTags( href );
     } ,
     
     beforeLoad : function() 
     {
-      var href = this.href.replace( fs_root + 'stacks/' , '' ).replace( /\..{0,5}$/i , '' );
+      var href = this.href.replace( www_root + 'stacks/' , '' ).replace( /\..{0,5}$/i , '' );
       while( href.match('/') ){ href = href.replace( '/' , '' ); }
 
       var title_html = '';
