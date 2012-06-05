@@ -31,6 +31,18 @@ input
   input.alx_input_tmp
   {
     display: inline;
+position: relative;
+padding: 12px 15px;
+border: 1px solid #CFCDC4;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-o-border-radius: 4px;
+-ms-border-radius: 4px;
+border-radius: 4px;
+background: white;
+display: block;
+width: 100%;
+margin: 55px 35px 0 0;
   }
 
 div.alx_div_tags
@@ -38,34 +50,26 @@ div.alx_div_tags
   padding: 10px 2px;
 }
 
-span.alx_span_tag
+div.alx_div_tag
 {
-  background: #999;
-  border: #FFF;
-  border-radius: 5px;
-  padding: 5px 0;
-float: left;
-  margin: 2px;
+background: red;
+  float: left;
+  font-size: 18px;
+  line-height: 22px;
 }
-  span.alx_span_tag > a
+
+  a.alx_a_tag_link
   {
-    font-size: 18px;
-    line-height: 22px;
-    margin: 5px 0;
-    padding: 10px;
-    color: #000;
+background: yellow; 
     text-decoration: none;
-  }
-  
-  span.alx_span_tag_remove
-  { 
-    background: white;
-    border: 1px solid black;
-    border-radius: 15px;
-    padding: 4px;
-    margin: 0 8px 0 0 ;
+    color: 
   }
 
+  span.alx_span_tag_remove
+  {
+background: green; 
+  }
+  
 div#alx_nav
 {
   background: #000;
@@ -96,5 +100,5 @@ outline: 1px solid blue;
 /* FancyBox Overrides */
 div.fancybox-skin
 {
-  background: #333;
+  background: #E5E6DC url( '../resources/images/texture.png' );
 }

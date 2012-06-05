@@ -26,7 +26,7 @@ $i = new AlexandriaItem( $_POST['item_id'] );
     // Check for Backspace
     if( k == 8 )
     {
-      if( $(this).val().length != 0 )
+      if( $(this).val().trim().length != 0 )
       {
         bksp_<?php print $i->id; ?>.count = 0;
       }
@@ -65,7 +65,10 @@ $i = new AlexandriaItem( $_POST['item_id'] );
 
       $(this).val( '' ); 
 
-      alxSubmitTags( '<?php print $i->id; ?>' );
+      if( k != 27 )
+      {
+        alxSubmitTags( '<?php print $i->id; ?>' );
+      }
 
       // On <Tab> or <Enter>
       if(  k == 9  ||  k == 13  )
@@ -88,7 +91,8 @@ $i = new AlexandriaItem( $_POST['item_id'] );
   });
   </script>
   <div id="alx_div_false_input_<?php print $i->id; ?>" class="alx_div_false_input" style="">
-    <div id="alx_div_tag_graphics_<?php print $i->id; ?>" class="alx_div_tag_graphics">
+    <div id="alx_div_tag_graphics_<?php print $i->id; ?>" class="alx_div_tag_graphics"
+         style="margin-bottom:10px;" >
 <?php
 
 foreach( $i->getItemTags() as $t )
@@ -96,9 +100,12 @@ foreach( $i->getItemTags() as $t )
 
 ?>
 
-      <span class="alx_span_tag">
-        <span class="alx_span_tag_name"><?php print $t['name']; ?></span>
-      </span>
+      <div class="alx_div_tag">
+        <a class="alx_a_tag_link" href="gallery.php?t=<?php print $t['id']; ?>">
+          <?php print $t['name']; ?>
+        </a>
+        <span class="alx_span_tag_remove" id="i_<?php print $i->id; ?>__t_<?php print $t['id']; ?>">X</span>
+      </div>
 
 <?php
 
@@ -107,7 +114,7 @@ foreach( $i->getItemTags() as $t )
 ?>
       <div style="clear:both;"></div>
     </div>
-    <span id="alx_span_buffer_<?php print $i->id; ?>"></span>
     <input id="alx_input_tmp_<?php print $i->id; ?>" class="alx_input_tmp" type="text" value="" tabindex="-1" />
+    <span id="alx_span_buffer_<?php print $i->id; ?>"></span>
   </div>
 </div><!-- .tag_input_outer -->

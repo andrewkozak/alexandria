@@ -193,78 +193,81 @@ class AlexandriaItem
   function setItemTags( $tags , $type=null )
   {
     $this->clearItemTags();
-    
-    $new_tags = explode( ',' , $tags );
-    
-    if( count($new_tags) > 0 )
+   
+    if( strlen( trim($tags) ) > 0 )
     { 
-      if(  $type != 'id'  &&  $type != 'name'  )
-      {
-        $all_numbers = true;
-
-        foreach( $new_tags as $nt )
+      $new_tags = explode( ',' , $tags );
+    
+      if( count($new_tags) > 0 )
+      { 
+        if(  $type != 'id'  &&  $type != 'name'  )
         {
-          if( $all_numbers == true )
+          $all_numbers = true;
+
+          foreach( $new_tags as $nt )
           {
-            if( !is_numeric($nt) )
+            if( $all_numbers == true )
             {
-              $all_numbers = false;
-            }          
+              if( !is_numeric($nt) )
+              {
+                $all_numbers = false;
+              }          
+            }
           }
-        }
         
-        $type = $all_numbers == true ? 'id' : 'name';
-      }
-
-      $cnxn = openMySQL();
- 
-      $mysql_tags = array();
-      if( $type == 'name' )
-      {
-        foreach( $new_tags as $nt )
-        {
-          $q = "SELECT COUNT(*)
-                FROM tags
-                WHERE tags.name='{$nt}'";
-          $r = mysql_query( $q , $cnxn );
-          $s = mysql_fetch_assoc( $r );
-          
-          if( $s['COUNT(*)'] == 0 )
-          {
-            $t = "INSERT INTO tags ( `name` )
-                  VALUES ( '{$nt}' )";
-            mysql_query( $t , $cnxn );
-          }
-          
-          $w = "SELECT tags.id
-                FROM tags
-                WHERE tags.name='{$nt}'";
-          $x = mysql_query( $w , $cnxn ); 
-          $y = mysql_fetch_assoc( $x );
-          
-          $mysql_tags[] = $y['id'];
+          $type = $all_numbers == true ? 'id' : 'name';
         }
-      }
-      else if( $type == 'id' )
-      {
-        $mysql_tags = $new_tags;
-      }
+
+        $cnxn = openMySQL();
+ 
+        $mysql_tags = array();
+        if( $type == 'name' )
+        {
+          foreach( $new_tags as $nt )
+          {
+            $q = "SELECT COUNT(*)
+                  FROM tags
+                  WHERE tags.name='{$nt}'";
+            $r = mysql_query( $q , $cnxn );
+            $s = mysql_fetch_assoc( $r );
+          
+            if( $s['COUNT(*)'] == 0 )
+            {
+              $t = "INSERT INTO tags ( `name` )
+                    VALUES ( '{$nt}' )";
+              mysql_query( $t , $cnxn );
+            }
+          
+            $w = "SELECT tags.id
+                  FROM tags
+                  WHERE tags.name='{$nt}'";
+            $x = mysql_query( $w , $cnxn ); 
+            $y = mysql_fetch_assoc( $x );
+          
+            $mysql_tags[] = $y['id'];
+          }
+        }
+        else if( $type == 'id' )
+        {
+          $mysql_tags = $new_tags;
+        }
   
-      sort( $mysql_tags );
-      $mysql_tags = array_unique( $mysql_tags );
+        sort( $mysql_tags );
+        $mysql_tags = array_unique( $mysql_tags );
 
-      foreach( $mysql_tags as $mt )
-      {
-        $q = "INSERT INTO items_to_tags ( `item_id` , `tag_id` )
-              VALUES ( '{$this->id}' , '{$mt}' )";
-        mysql_query( $q , $cnxn );
-      } 
+        foreach( $mysql_tags as $mt )
+        {
+          $q = "INSERT INTO items_to_tags ( `item_id` , `tag_id` )
+                VALUES ( '{$this->id}' , '{$mt}' )";
+          mysql_query( $q , $cnxn );
+        } 
 
-      closeMySQL( $cnxn );
-
-      $this->getItemTags(true);
+        closeMySQL( $cnxn );
+  
+        $this->getItemTags(true);
+      }
     }
-
+  
     return;
   }
 

@@ -95,26 +95,23 @@ thumb_size = '<?php print IMAGE_SIZE; ?>';
 
 function alxSubmitTags( id )
 {
-console.log( "Submitting tags for: " + id );
-
   var tmp = $('input#alx_input_tmp_'+id).val();
 
   var names = $('div#alx_div_tag_names_'+id).html();
-  
+
   var graphics = $('div#alx_div_tag_graphics_'+id).html();
 
   var jqxhr = $.ajax(
   {
     url: "actions/item/update_tags.php" ,
-    type: 'POST' ,
     async: false ,
-    data: { 'item_id': id , 'tag_names': names }
+    type: 'POST' ,
+    data: { 'item_id': id , 'tag_names': names } ,
+    dataType: 'json' 
   })
   .done( function( response )
   {
-    alxShowTags( id );
-console.log( "Tags successfully submitted." );
-console.log( response );
+    alxShowTags( id , response );
   });
 
   return;
@@ -122,16 +119,16 @@ console.log( response );
 
 
 
-function alxShowTags( id )
+function alxShowTags( id , tags )
 {
-  var tags = $('div#alx_div_tag_names_'+id).html().split(',');
-  
   var new_graphics = '';
-  for( var i = 0 ; i < tags.length ; i++ )
-  {
-    new_graphics += '<span class="alx_span_tag"><span class="alx_span_tag_name">' + tags[i] + '</span></span>';
-  }
 
+  for( t in tags )
+  {
+    //new_graphics += '<div class="alx_div_tag"><a class="alx_a_tag_link" href="gallery.php?t=' + tags[t].id + '">' + tags[t].name + '</a></span>';
+    new_graphics += '<div class="alx_div_tag"><a class="alx_a_tag_link" href="gallery.php?t=' + tags[t].id + '">' + tags[t].name + '</a><span class="alx_span_tag_remove" id="i_' + id + '__t_' + tags[t].id + '">X</span></div>';
+  }
+  
   $('div#alx_div_tag_graphics_'+id).html( new_graphics + '<div style="clear:both;"></div>' );
 
   return;
