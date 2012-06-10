@@ -1,6 +1,6 @@
 html
 {
-  background: #333;
+  background: #222233 url( '../resources/images/texture_dark.png' );
   font-family: 'Arial' , sans-serif;
   font-size: 18px;
   line-height: 22px;
@@ -22,7 +22,7 @@ input
   background: #CCC;
   color: #000;
   font-size: 18px;
-  line-height: 22px;;
+  line-height: 22px;
 }
   input.alx_input_tags
   {
@@ -32,7 +32,7 @@ input
   {
     display: inline;
 position: relative;
-padding: 12px 15px;
+padding: 4px;
 border: 1px solid #CFCDC4;
 -moz-border-radius: 4px;
 -webkit-border-radius: 4px;
@@ -42,43 +42,134 @@ border-radius: 4px;
 background: white;
 display: block;
 width: 100%;
-margin: 55px 35px 0 0;
   }
 
-div.alx_div_tags
+div.alx_div_tag_graphics
 {
-  padding: 10px 2px;
+  margin: 14px 0 0 0;
 }
 
 div.alx_div_tag
 {
-background: red;
   float: left;
   font-size: 18px;
   line-height: 22px;
+  position: relative;
+  padding: 0 14px 14px 0;
 }
 
   a.alx_a_tag_link
   {
-background: yellow; 
-    text-decoration: none;
-    color: 
+    display: inline-block;
+    padding: 8px 11px;
+    background: #A0A096;
+    white-space: nowrap;
+    color: white;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      -m-border-radius: 3px;
+      -o-border-radius: 3px;
+    border-radius: 3px;
+    text-shadow: rgba(0, 0, 0, .2) 0 -1px 0;
+      -webkit-transition: background-color .25s ease-in;
+      -moz-transition: background-color .25s ease-in;
+      -o-transition: background-color .25s ease-in;
+      -ms-transition: background-color .25s ease-in;
+    transition: background-color .25s ease-in;
+    cursor: pointer;
   }
-
   span.alx_span_tag_remove
   {
-background: green; 
+    position: absolute;
+    top: -10px;
+    right: 6px;
+    width: 22px;
+    height: 25px;
+    overflow: hidden;
+    text-indent: 25px;
+    text-decoration: none;
+    background: url('../resources/images/cross.png') no-repeat 0 0;
   }
+    span.alx_span_tag_remove:hover
+    {
+      position: absolute;
+      top: -10px;
+      right: 6px;
+      width: 22px;
+      height: 25px;
+      overflow: hidden;
+      text-indent: 25px;
+      text-decoration: none;
+      background: url('../resources/images/cross.png') no-repeat 0px -30px;
+    }
   
 div#alx_nav
 {
-  background: #000;
-  height: 40px;
+  background: #E5E6DC url( '../resources/images/texture.png' );
+  border: 2px solid #CFCDC4;
+  //height: 40px;
+-moz-box-shadow: 0px 0px 5px #888;
+-webkit-box-shadow: 0px 0px 5px #888;
+box-shadow: 0px 0px 5px #888;
 }
+
+  div#alx_nav input
+  {
+    display: inline;
+position: relative;
+padding: 4px;
+border: 1px solid #CFCDC4;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-o-border-radius: 4px;
+-ms-border-radius: 4px;
+border-radius: 4px;
+background: white;
+display: block;
+width: 100%;
+margin: 5px 0;
+font-size: 24px;
+line-height: 28px;
+color: #CFCDC4;
+  }
+
+  div#alx_nav li#alx_li_nav_dashboard ,
+  div#alx_nav li#alx_li_nav_inbox
+  {
+    color: #FFF !important;
+    display: inline-block;
+    padding: 2px;
+    margin: 2px 8px 0 8px;
+    background-color: rgb( 160 , 160 , 150 );
+    white-space: nowrap;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      -m-border-radius: 3px;
+      -o-border-radius: 3px;
+    border-radius: 3px;
+    text-shadow: rgba(0, 0, 0, .2) 0 -1px 0;
+      -webkit-transition: background-color .25s ease-in;
+      -moz-transition: background-color .25s ease-in;
+      -o-transition: background-color .25s ease-in;
+      -ms-transition: background-color .25s ease-in;
+    transition: background-color .25s ease-in;
+    cursor: pointer;
+  }
+    div#alx_nav li#alx_li_nav_dashboard:hover ,
+    div#alx_nav li#alx_li_nav_inbox:hover
+    {
+      color: #FFF !important;
+      background-color: rgb( 120 , 120 , 112 );
+    }
+
+
+
+  span.alx_span_tag_remove
+  {
+  }
 
 div.alx_div_tag_outer
 {
-/* outline: 1px solid red; */
   position: relative;
 }
   div.alx_div_tag_outer > input
@@ -87,18 +178,19 @@ div.alx_div_tag_outer
     top: 0px;
     left: 0px;
   }
-  div.alx_div_tag_outer > span.alx_span_tag_overlay
-  {
-/*
-    width: 100%;
-outline: 1px solid blue;
-    top: 0px;
-    left: 0px;
-*/
-  }
 
 /* FancyBox Overrides */
 div.fancybox-skin
 {
   background: #E5E6DC url( '../resources/images/texture.png' );
+}
+
+#fancybox-overlay
+{
+  background: #E5E6DC !important;
+}
+
+img.fancybox-image
+{
+  border: 1px solid #CFCDC4;
 }

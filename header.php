@@ -95,8 +95,6 @@ thumb_size = '<?php print IMAGE_SIZE; ?>';
 
 function alxSubmitTags( id )
 {
-  var tmp = $('input#alx_input_tmp_'+id).val();
-
   var names = $('div#alx_div_tag_names_'+id).html();
 
   var graphics = $('div#alx_div_tag_graphics_'+id).html();
@@ -125,7 +123,6 @@ function alxShowTags( id , tags )
 
   for( t in tags )
   {
-    //new_graphics += '<div class="alx_div_tag"><a class="alx_a_tag_link" href="gallery.php?t=' + tags[t].id + '">' + tags[t].name + '</a></span>';
     new_graphics += '<div class="alx_div_tag"><a class="alx_a_tag_link" href="gallery.php?t=' + tags[t].id + '">' + tags[t].name + '</a><span class="alx_span_tag_remove" id="i_' + id + '__t_' + tags[t].id + '">X</span></div>';
   }
   

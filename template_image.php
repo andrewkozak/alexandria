@@ -13,6 +13,32 @@ $i = new AlexandriaItem( $_POST['item_id'] );
   var bksp_<?php print $i->id; ?> = new Object();
   bksp_<?php print $i->id; ?>.count = 0;
 
+  $('div.alx_div_tag').hover( 
+    function(){ $(this).children('a').css( 'background-color' , 'rgb(120, 120, 112)' ); } ,
+    function(){ $(this).children('a').css( 'background-color' , 'rgb(160, 160, 150)' ); }
+  );
+
+  $('span.alx_span_tag_remove').live( 'click' , function(e)
+  {
+    var item_id = $(this).attr('id').split('__')[0].split('_')[1];
+    var tag_name = $(this).siblings('a.alx_a_tag_link').html().trim();
+    var curr_tag_names = $('div#alx_div_tag_names_'+item_id).html().split(',');
+    var tag_name_index = $.inArray( tag_name , curr_tag_names );
+    
+    if( tag_name_index != -1 )
+    {
+      curr_tag_names.splice( tag_name_index , 1 );
+
+      new_tag_names = curr_tag_names.join(',');
+
+      $('div#alx_div_tag_names_'+item_id).html( new_tag_names );
+
+      alxSubmitTags( item_id );
+    }
+
+    e.stopImmediatePropagation(); 
+  });
+  
   $('input#alx_input_tmp_<?php print $i->id; ?>').keyup( function(e)
   { 
     k = ( e.keyCode ? e.keyCode : e.which ); 
@@ -57,10 +83,17 @@ $i = new AlexandriaItem( $_POST['item_id'] );
 
       if( value.length > 0 )
       {
-        var extant = $('div#alx_div_tag_names_<?php print $i->id; ?>').html().trim().replace( /,$/ , '' ); 
-        if( extant.length > 0 ){ value = ',' + value; } 
+        var extant = $('div#alx_div_tag_names_<?php print $i->id; ?>').html().trim().replace(/,$/,''); 
+       
+        var extant_tags = new Array();
+ 
+        if( extant.length > 0 ){ extant_tags = extant.split(','); }
 
-        $('div#alx_div_tag_names_<?php print $i->id; ?>').html( extant + value ); 
+        extant_tags[ extant_tags.length ] = value;
+
+        extant_tags.sort();        
+
+        $('div#alx_div_tag_names_<?php print $i->id; ?>').html( extant_tags.join(',') ); 
       }
 
       $(this).val( '' ); 
@@ -93,6 +126,7 @@ $i = new AlexandriaItem( $_POST['item_id'] );
   <div id="alx_div_false_input_<?php print $i->id; ?>" class="alx_div_false_input" style="">
     <div id="alx_div_tag_graphics_<?php print $i->id; ?>" class="alx_div_tag_graphics"
          style="margin-bottom:10px;" >
+
 <?php
 
 foreach( $i->getItemTags() as $t )
@@ -104,7 +138,7 @@ foreach( $i->getItemTags() as $t )
         <a class="alx_a_tag_link" href="gallery.php?t=<?php print $t['id']; ?>">
           <?php print $t['name']; ?>
         </a>
-        <span class="alx_span_tag_remove" id="i_<?php print $i->id; ?>__t_<?php print $t['id']; ?>">X</span>
+        <span class="alx_span_tag_remove" id="i_<?php print $i->id; ?>__t_<?php print $t['id']; ?>">&nbsp;</span>
       </div>
 
 <?php
@@ -112,9 +146,9 @@ foreach( $i->getItemTags() as $t )
 }
 
 ?>
+
       <div style="clear:both;"></div>
     </div>
     <input id="alx_input_tmp_<?php print $i->id; ?>" class="alx_input_tmp" type="text" value="" tabindex="-1" />
-    <span id="alx_span_buffer_<?php print $i->id; ?>"></span>
   </div>
 </div><!-- .tag_input_outer -->

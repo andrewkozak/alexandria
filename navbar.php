@@ -1,10 +1,10 @@
 <div id="alx_nav">
   <ul>
-    <li id="alx_nav_dashboard" style="float:left;">
+    <li id="alx_li_nav_dashboard" style="float:left;">
       <a style="font-family:'Arial',sans-serif;line-height:1.5em;margin:10px;" href="dashboard.php">dashboard</a>
     </li>
-    <li id="alx_nav_inbox" style="float:right;">
-      <a style="font-family:'Arial',sans-serif;line-height:1.5em;margin:10px;" href="inbox.php">inbox</a>
+    <li id="alx_li_nav_inbox" style="float:right;">
+      <a style="font-family:'Arial',sans-serif;line-height:1.5em;margin:10px;" href="process_inbox.php">inbox</a>
     </li>
     <li id="alx_nav_search" style="width:400px;margin: 0 auto;">
 <?php
@@ -26,25 +26,29 @@ if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
       $('input#alx_input_tag_search').keyup( function(e)
       {
         k = ( e.keyCode ? e.keyCode : e.which );
-        if(  k == 13  &&  $(this).val().trim().length > 0  ) 
+        if( k == 13 )
         {
-          var raw = $(this).val().replace(/,?\s?$/,'').split(',');
-          var query = new Array;
-          for( var i = 0 ; i < raw.length ; i++ )
+          if( $(this).val().trim().length > 0 ) 
           {
-            query[ query.length ] = raw[i].trim();
-          }
+            var raw = $(this).val().replace(/,?\s?$/,'').split(',');
+            var query = new Array;
+            for( var i = 0 ; i < raw.length ; i++ )
+            {
+              query[ query.length ] = raw[i].trim();
+            }
 
-          var jqxhr = $.ajax(
-          {
-            url: "actions/tags/names_to_ids.php" ,
-            type: 'POST' ,
-            data: { 'names': query }
-          })
-          .done( function( response )
-          {
-            window.location = 'gallery.php?t=' + response;
-          });
+            var jqxhr = $.ajax(
+            {
+              url: "actions/tags/names_to_ids.php" ,
+              type: 'POST' ,
+              data: { 'names': query }
+            })
+            .done( function( response )
+            {
+              window.location = 'gallery.php?t=' + response;
+            });
+          }
+          else{ window.location = 'gallery.php'; }
         }
       });
 

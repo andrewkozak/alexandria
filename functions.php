@@ -339,4 +339,16 @@ function fileGetTagNames( $id )
 
 
 
+/**
+ *TODO Log file create actions
+ */
+function fileLogCreation( $old_name , $new_name )
+{
+  $handle = fopen( FS_ROOT . '/logs/creation_' . date('Y-M-d') , 'a+' );
+
+  return;
+}
+
+
+
 ?>
