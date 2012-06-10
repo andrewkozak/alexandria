@@ -13,9 +13,10 @@ define( 'DEV_DEBUG' , 'false' );
 
 
 
-/** Filesystem **/
+/** Environment **/
 // Use a trailing slash; e.g. www.website.com/gallery/
 define( 'FS_ROOT' , '' );
+define( 'WWW_ROOT' , '' );
 
 
 
