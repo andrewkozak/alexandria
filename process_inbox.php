@@ -33,24 +33,34 @@ while( ($entry = readdir($inbox)) !== false )
 
     $stack_path = buildStacks( $path_array );
 
-    $input_full_path = $input_path . "/" . $input_name . "." . $input_type;
-    $output_full_path = $stack_path . "/" . $path_array[ count($path_array)-1 ] . "." . $output_type;
+    $input_full_path = FS_ROOT . $input_path . "/" . $input_name . "." . $input_type;
+    $output_full_path = FS_ROOT . $stack_path . "/" . $path_array[ count($path_array)-1 ] . "." . $output_type;
+    $thumb_full_path = FS_ROOT . $stack_path . "/t/t_" . $path_array[ count($path_array)-1 ] . "." . $output_type;
     
     $cnxn = openMySQL();
     
-    $q = "INSERT INTO items ( id , name , type ) VALUES ( '{$hash}' , '{$input_name}' , '{$output_type}' )";
+    $q = "INSERT INTO items ( id , name , type ) VALUES ('{$hash}','{$input_name}','{$output_type}')";
     
     mysql_query( $q , $cnxn );
 
     closeMySQL( $cnxn );
-
-
  
+    // Check for the thumbnail
+    if( !file_exists( $thumb_full_path ) )
+    {
+      image_resize( $input_full_path , $thumb_full_path , IMAGE_SIZE , IMAGE_SIZE , 1 );
+    }
+
+
+
     if( !file_exists( $output_full_path ) )
     {
-      rename( $input_full_path , $output_full_path );
-      print $input_full_path . " --to--> " . $output_full_path . "<br /><br />";
+      //rename( $input_full_path , $output_full_path );
+      copy( $input_full_path , $output_full_path );
     }
+
+
+
     else
     {
       print 'File: ' . $input_full_path . ' already exists at: ' . $output_full_path;

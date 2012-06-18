@@ -1,5 +1,7 @@
 <?php
 
+$files_array = array();
+
 if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
 {
   $request_tags_raw = explode( ',' , $_GET['t'] );
