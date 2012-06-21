@@ -12,3 +12,7 @@ Alexandria Media Management Library
 0.e. Until a better solution is determined, chmod the following:
      $ chmod -R 777 stacks
      $ chmod -R 777 inbox
+
+~!~ WARNINGS ~!~
+
+re-chmod /inbox before each process session.

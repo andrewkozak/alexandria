@@ -379,9 +379,13 @@ function image_resize( $src , $dst , $width , $height , $crop=0 )
   {
     if(  $w < $width  ||  $h < $height  )
     {
-      return false;
+      $ratio = 1;
     }
-    $ratio = max( $width/$w , $height/$h );
+    else
+    {
+      $ratio = max( $width/$w , $height/$h );
+    }
+    
     $h = $height / $ratio;
     $x = ( $w - $width / $ratio) / 2;
     $w = $width / $ratio;
@@ -390,9 +394,13 @@ function image_resize( $src , $dst , $width , $height , $crop=0 )
   {
     if(  $w < $width  &&  $h < $height  ) 
     {
-      return false;
+      $ratio = 1;
     }
-    $ratio = min( $width/$w , $height/$h );
+    else
+    {
+      $ratio = min( $width/$w , $height/$h );
+    }
+  
     $width = $w * $ratio;
     $height = $h * $ratio;
     $x = 0;
@@ -408,20 +416,24 @@ function image_resize( $src , $dst , $width , $height , $crop=0 )
   }
 
   imagecopyresampled($new, $img, 0, 0, $x, 0, $width, $height, $w, $h);
-
+  
   switch( $type )
   {
     case 'bmp': 
-      imagewbmp($new, $dst); 
+      imagewbmp( $new , $dst ); 
+      //imagedestroy( $dst );
       break;
     case 'gif': 
-      imagegif($new, $dst); 
+      imagegif( $new , $dst ); 
+      //imagedestroy( $dst );
       break;
     case 'jpg': 
-      imagejpeg($new, $dst);  
+      imagejpeg( $new , $dst );  
+      //imagedestroy( $dst );
       break;
     case 'png': 
-      imagepng($new, $dst); 
+      imagepng( $new , $dst ); 
+      //imagedestroy( $dst );
       break;
   }
 

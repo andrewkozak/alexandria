@@ -48,19 +48,35 @@ while( ($entry = readdir($inbox)) !== false )
     // Check for the thumbnail
     if( !file_exists( $thumb_full_path ) )
     {
-      image_resize( $input_full_path , $thumb_full_path , IMAGE_SIZE , IMAGE_SIZE , 1 );
+      $thumb_dir = substr( $thumb_full_path , 0 , strrpos( $thumb_full_path , '/t_' ) );
+      if( !file_exists( $thumb_dir ) )
+      {
+        print( $thumb_dir );
+        mkdir( $thumb_dir );
+        $old_mask = umask(0);
+        chmod( $thumb_dir , 0777 );
+        umask( $old_mask );
+      }
+     
+      if( image_resize( $input_full_path , $thumb_full_path , ( 2 * ( (int) IMAGE_SIZE ) ) , ( 2 * ( (int) IMAGE_SIZE ) ) , 1 ) )
+      {
+        print "Success! Create new thumbnail at {$thumb_full_path}<br />";
+      }
+    }
+    else
+    {
+      print "Failure to create thumbnail for {$input_full_path}; already exists<br />";
     }
 
 
 
     if( !file_exists( $output_full_path ) )
     {
-      //rename( $input_full_path , $output_full_path );
-      copy( $input_full_path , $output_full_path );
+      if( rename( $input_full_path , $output_full_path ) )
+      {
+        print "Success! Stored new image at {$output_full_path}<br />";
+      }
     }
-
-
-
     else
     {
       print 'File: ' . $input_full_path . ' already exists at: ' . $output_full_path;

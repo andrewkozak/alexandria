@@ -77,6 +77,22 @@ class AlexandriaItem
 
     return $this->src;
   }
+
+
+
+  function getItemThumbSrc( $force=false )
+  {
+    if( !isset($this->id) ){ return false; }
+
+    if(  !isset($this->src)  ||  $force == true  )
+    {
+      if( $this->getItemType() == false ){ return false; }
+      
+      $this->src = WWW_ROOT . "stacks/" . $this->getPath( true ) . "." . $this->type;
+    }
+
+    return preg_replace( '/\/([^\/]+)\.' . $this->type .'/' , '/t/t_$1.' . $this->type , $this->src );
+  }
  
   
 
