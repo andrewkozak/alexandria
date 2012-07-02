@@ -377,15 +377,7 @@ function image_resize( $src , $dst , $width , $height , $crop=0 )
 
   if( $crop )
   {
-    if(  $w < $width  ||  $h < $height  )
-    {
-      $ratio = 1;
-    }
-    else
-    {
-      $ratio = max( $width/$w , $height/$h );
-    }
-    
+    $ratio = max( $width/$w , $height/$h );
     $h = $height / $ratio;
     $x = ( $w - $width / $ratio) / 2;
     $w = $width / $ratio;
