@@ -134,6 +134,7 @@ color: #CFCDC4;
   }
 
   div#alx_nav li#alx_li_nav_dashboard ,
+  div#alx_nav li#alx_li_nav_untagged ,
   div#alx_nav li#alx_li_nav_inbox
   {
     color: #FFF !important;

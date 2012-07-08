@@ -6,6 +6,9 @@
     <li id="alx_li_nav_inbox" style="float:right;">
       <a style="font-family:'Arial',sans-serif;line-height:1.5em;margin:10px;" href="process_inbox.php">inbox</a>
     </li>
+    <li id="alx_li_nav_untagged" style="float:right;">
+      <a style="font-family:'Arial',sans-serif;line-height:1.5em;margin:10px;" href="gallery.php?t=untagged">untagged</a>
+    </li>
     <li id="alx_nav_search" style="width:400px;margin: 0 auto;">
 <?php
 

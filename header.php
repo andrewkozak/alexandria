@@ -1,8 +1,21 @@
 <?php
 
 $files_array = array();
+$tag_names = array();
 
-if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
+if(  isset($_GET['t'])  &&  $_GET['t'] == 'untagged'  )
+{
+  $cnxn = openMySQL();
+  $q = "SELECT i.id , i.type
+        FROM items AS i
+          LEFT JOIN items_to_tags AS i2t
+            ON i.id = i2t.item_id
+        WHERE i2t.item_id IS NULL";
+  $r = mysql_query( $q , $cnxn );
+  while( $s = mysql_fetch_assoc( $r ) ){ $files_array[] = $s; }
+  closeMySQL( $cnxn );
+}
+else if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
 {
   $request_tags_raw = explode( ',' , $_GET['t'] );
   $request_tags = array();
@@ -29,10 +42,6 @@ if(  isset($_GET['t'])  &&  strlen($_GET['t']) > 0  )
   if( count($request_tags_plus) > 0 )
   {
     $tag_names = tagIdToName( $request_tags_plus , true );
-  }
-  else
-  {
-    $tag_names = array();
   }
 
   foreach( $request_tags_minus as $rtm )
