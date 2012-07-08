@@ -99,14 +99,15 @@ function alxSubmitTags( id )
 {
   var names = $('div#alx_div_tag_names_'+id).html();
 
-  var graphics = $('div#alx_div_tag_graphics_'+id).html();
+  /* @todo Is this being used? */
+  //var graphics = $('div#alx_div_tag_graphics_'+id).html();
 
   var jqxhr = $.ajax(
   {
     url: "actions/item/update_tags.php" ,
     async: false ,
     type: 'POST' ,
-    data: { 'item_id': id , 'tag_names': names } ,
+    data: { 'item_id': id , 'tag_names': names.toLowerCase() } ,
     dataType: 'json' 
   })
   .done( function( response )

@@ -78,7 +78,10 @@ $i = new AlexandriaItem( $_POST['item_id'] );
     }
     else if(  k == 9  ||  k == 13  ||  k == 27  ||  k == 188  )
     {
-      var value = $(this).val().trim().replace( /^\s*/ , '' ).replace( /\s*,$/ , '' ); 
+      // Trim whitespace, force lowercase, and escape single quotes
+      var value = $(this).val().trim().replace( /^\s*/ , '' ).replace( /\s*,$/ , '' );
+          value = value.toLowerCase(); 
+          value = value.replace( /'/ , '\'' );
       while( value.match(/\s\s+/) ){ value = value.replace( /\s\s/ , ' ' ); } 
 
       if( value.length > 0 )
