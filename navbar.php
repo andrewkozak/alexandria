@@ -3,6 +3,9 @@
     <li id="alx_li_nav_dashboard" style="float:left;">
       <a style="font-family:'Arial',sans-serif;line-height:1.5em;margin:10px;" href="dashboard.php">dashboard</a>
     </li>
+    <li id="alx_li_nav_tags" style="float:left;">
+      <a style="font-family:'Arial',sans-serif;line-height:1.5em;margin:10px;" href="tags.php">tags</a>
+    </li>
     <li id="alx_li_nav_inbox" style="float:right;">
       <a style="font-family:'Arial',sans-serif;line-height:1.5em;margin:10px;" href="process_inbox.php">inbox</a>
     </li>
